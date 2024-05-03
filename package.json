@@ -1,11 +1,12 @@
 {
-  "name": "whatever",
-  "displayName": "whatever",
+  "name": "c-sharp-utilities",
+  "displayName": "C# Utilities",
   "description": "",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.88.0"
   },
+  "publisher": "revrenlove",
   "categories": [
     "Other"
   ],
@@ -14,8 +15,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "whatever.helloWorld",
-        "title": "Hello World"
+        "command": "c-sharp-utilities.helloWorld",
+        "title": "Hello, world."
       }
     ]
   },
@@ -28,14 +29,17 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.88.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+    "@types/vscode": "^1.88.0",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
-    "eslint": "^8.57.0",
-    "typescript": "^5.3.3",
     "@vscode/test-cli": "^0.0.8",
-    "@vscode/test-electron": "^2.3.9"
+    "@vscode/test-electron": "^2.3.9",
+    "eslint": "^8.57.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@revrenlove/easy-vscode-commands": "^1.0.1"
   }
 }
