@@ -10,5 +10,10 @@
     "typescript.tsc.autoDetect": "off",
     "editor.codeActionsOnSave": {
         "source.fixAll": "explicit"
-    }
+    },
+    "cSpell.words": [
+        "copyfiles",
+        "outfile",
+        "tmpl"
+    ]
 }

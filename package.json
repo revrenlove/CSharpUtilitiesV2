@@ -1,12 +1,12 @@
 {
-  "name": "c-sharp-utilities",
+  "name": "c-sharp-utilities2",
   "displayName": "C# Utilities",
   "description": "",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.88.0"
   },
-  "publisher": "revrenlove",
+  "publisher": "revrenlove2",
   "categories": [
     "Other"
   ],
@@ -15,18 +15,21 @@
   "contributes": {
     "commands": [
       {
-        "command": "c-sharp-utilities.helloWorld",
+        "command": "c-sharp-utilities2.helloWorld",
         "title": "Hello, world."
       }
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
+    "vscode:prepublish": "npm run esbuild-base -- --minify && npm run copy-static",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap && npm run copy-static",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+    "test-compile": "tsc -p ./",
     "lint": "eslint src --ext ts",
-    "test": "vscode-test"
+    "copy-static": "copyfiles -u 1 ./**/*.tmpl ./out",
+    "deploy": "vsce publish",
+    "package": "vsce package"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
@@ -36,6 +39,8 @@
     "@typescript-eslint/parser": "^7.4.0",
     "@vscode/test-cli": "^0.0.8",
     "@vscode/test-electron": "^2.3.9",
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
     "typescript": "^5.3.3"
   },
