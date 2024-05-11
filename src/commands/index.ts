@@ -1,7 +1,10 @@
-import { HelloWorldCommand } from "./hello-world-command";
+import { EasyVsCodeCommand } from "@revrenlove/easy-vscode-commands";
+import { HelloWorldCommand } from "./HelloWorldCommand";
+import { addItemCommands } from "./add-item";
 
-const commands = [
-    HelloWorldCommand
+const commands: EasyVsCodeCommand[] = [
+    HelloWorldCommand,
+    ...addItemCommands
 ];
 
 export { commands };

@@ -10,13 +10,88 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
-  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/main.js",
   "contributes": {
     "commands": [
       {
         "command": "c-sharp-utilities2.helloWorld",
         "title": "Hello, world."
+      },
+      {
+        "command": "c-sharp-utilities2.addClass",
+        "title": "Add Class"
+      },
+      {
+        "command": "c-sharp-utilities2.addEnum",
+        "title": "Add Enum"
+      },
+      {
+        "command": "c-sharp-utilities2.addStruct",
+        "title": "Add Struct"
+      },
+      {
+        "command": "c-sharp-utilities2.addRecord",
+        "title": "Add Record"
+      },
+      {
+        "command": "c-sharp-utilities2.addInterface",
+        "title": "Add Interface"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "c-sharp-utilities2.addClass",
+          "when": "false"
+        },
+        {
+          "command": "c-sharp-utilities2.addInterface",
+          "when": "false"
+        },
+        {
+          "command": "c-sharp-utilities2.addRecord",
+          "when": "false"
+        },
+        {
+          "command": "c-sharp-utilities2.addEnum",
+          "when": "false"
+        },
+        {
+          "command": "c-sharp-utilities2.addStruct",
+          "when": "false"
+        }
+      ],
+      "c-sharp-utilities2.addItem": [
+        {
+          "command": "c-sharp-utilities2.addClass"
+        },
+        {
+          "command": "c-sharp-utilities2.addInterface"
+        },
+        {
+          "command": "c-sharp-utilities2.addRecord"
+        },
+        {
+          "command": "c-sharp-utilities2.addEnum"
+        },
+        {
+          "command": "c-sharp-utilities2.addStruct"
+        }
+      ],
+      "explorer/context": [
+        {
+          "submenu": "c-sharp-utilities2.addItem",
+          "when": "resourceExtname == .csproj || resourceExtname == .cs || explorerResourceIsFolder"
+        }
+      ]
+    },
+    "submenus": [
+      {
+        "id": "c-sharp-utilities2.addItem",
+        "label": "Add C# Item..."
       }
     ]
   },
@@ -45,6 +120,6 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@revrenlove/easy-vscode-commands": "^1.0.1"
+    "@revrenlove/easy-vscode-commands": "^1.0.3"
   }
 }
