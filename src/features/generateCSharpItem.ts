@@ -1,8 +1,8 @@
-import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { TemplateType } from "../templates/TemplateType";
 import * as util from '../util';
+import { cSharpProjectFactory } from '../factories/cSharpProjectFactory';
 
 // TODO: Rename this regex...
 const filenameRegex = new RegExp(`\\${path.sep}[^\\${path.sep}]+$`);
@@ -15,11 +15,13 @@ async function generateCSharpItem(templateType: TemplateType, contextualUri: vsc
 
     const newFileUri = await getNewFileUri(filename, contextualUri);
 
-    if (checkFileExistsSync(newFileUri)) {
+    if (await fileExists(newFileUri)) {
         throw new Error(`File already exists: ${newFileUri.fsPath}`);
     }
 
     const namespace = await getFullNamespace(newFileUri);
+
+    vscode.window.showInformationMessage(namespace);
 
     // Get the namespace
 
@@ -72,9 +74,9 @@ async function getNewFileUri(filename: string, contextualUri: vscode.Uri): Promi
     return newFileUri;
 }
 
-function checkFileExistsSync(uri: vscode.Uri) {
+async function fileExists(uri: vscode.Uri): Promise<boolean> {
     try {
-        fs.statSync(uri.fsPath);
+        await vscode.workspace.fs.stat(uri);
         return true; // File exists
     } catch (error) {
         if (error instanceof Error && error.message.includes('ENOENT')) {
@@ -85,59 +87,35 @@ function checkFileExistsSync(uri: vscode.Uri) {
     }
 }
 
-async function exists(uri: vscode.Uri): Promise<boolean> {
-
-    // const stats = vscode.workspace.fs.
-    // return stats !== undefined && stats !== null;
-    // vscode.workspace.fs.acc
-
-    // TODO: JE - This error hits - figure out how to find out if a duplicate file exists without using a try/catch
-    throw new Error("Fuck off!");
-
-    // TODO: JE - This try/catch fucks with the threads so that exceptions get swallowed. That's not good.
-    // try {
-    //     await vscode.workspace.fs.stat(uri);
-
-    //     return true;
-    // }
-    // catch {
-    //     return false;
-    // }
-}
-
 async function getFullNamespace(newFileUri: vscode.Uri): Promise<string> {
 
-    const projectFileUri = await getProjectFileUri(newFileUri);
+    const directoryPath = newFileUri.fsPath.replace(filenameRegex, '');
+    const directoryUri = vscode.Uri.file(directoryPath);
 
-    vscode.window.showInformationMessage(`Project File: ${projectFileUri.fsPath}`);
+    const projectFileUri = await getProjectFileUri(directoryUri);
 
-    // const projectFileUri = vscode.Uri.file(projectFilePath);
+    const cSharpProject = await cSharpProjectFactory(projectFileUri);
 
-    // const cSharpProject = await this.cSharpProjectFactory.fromUriAsync(projectFileUri);
+    let namespace = cSharpProject.rootNamespace;
 
-    // let namespace = cSharpProject.rootNamespace;
+    const projectFileDirectoryPath = path.parse(projectFileUri.fsPath).dir;
 
-    // const newFileDirectory = contextualDirectoryUri.fsPath;
+    if (directoryPath !== projectFileDirectoryPath) {
 
-    // const projectFileDirectory = path.parse(projectFilePath).dir;
+        const escapedSeparator = path.sep.replace(/\\/g, '\\\\');
 
-    // if (newFileDirectory !== projectFileDirectory) {
+        const pathRegex = new RegExp(escapedSeparator, 'g');
 
-    //     const escapedSeparator = path.sep.replace(/\\/g, '\\\\');
+        const subNamespace =
+            directoryPath
+                .replace(projectFileDirectoryPath, '')
+                .replace(pathRegex, '.');
 
-    //     const pathRegex = new RegExp(escapedSeparator, 'g');
+        namespace += subNamespace;
+    }
 
-    //     const subNamespace =
-    //         newFileDirectory
-    //             .replace(projectFileDirectory, '')
-    //             .replace(pathRegex, '.');
+    return namespace;
 
-    //     namespace += subNamespace;
-    // }
-
-    // return namespace;
-
-    return "";
 }
 
 interface ReadDirectoryResult {
@@ -145,10 +123,9 @@ interface ReadDirectoryResult {
     fileType: vscode.FileType;
 }
 
-async function getProjectFileUri(newFileUri: vscode.Uri): Promise<vscode.Uri> {
+async function getProjectFileUri(directoryUri: vscode.Uri): Promise<vscode.Uri> {
 
     let projectFileUri: vscode.Uri;
-    const directoryUri: vscode.Uri = vscode.Uri.joinPath(newFileUri, '..');;
 
     const readDirectoryResults = (await vscode.workspace.fs.readDirectory(directoryUri)).map(r => {
         const result: ReadDirectoryResult = {
@@ -173,9 +150,9 @@ async function getProjectFileUri(newFileUri: vscode.Uri): Promise<vscode.Uri> {
         throw new Error("You can only add an item in a C# project folder.");
     }
 
-    const parentDirectoryPath = directoryUri.fsPath.replace(filenameRegex, '');
+    const parentDirectoryUri = vscode.Uri.joinPath(directoryUri, '..');
 
-    projectFileUri = await getProjectFileUri(vscode.Uri.file(parentDirectoryPath));
+    projectFileUri = await getProjectFileUri(parentDirectoryUri);
 
     return projectFileUri;
 }

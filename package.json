@@ -120,6 +120,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@revrenlove/easy-vscode-commands": "^1.0.3"
+    "@revrenlove/easy-vscode-commands": "^1.0.3",
+    "fast-xml-parser": "^4.3.6"
   }
 }
