@@ -1,11 +1,13 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { TemplateType } from "../templates/TemplateType";
 import * as util from '../util';
+import { TemplateType } from "../templates/TemplateType";
 import { cSharpProjectFactory } from '../factories/cSharpProjectFactory';
+import { ItemFileTemplate } from '../templates/ItemFileTemplate';
 
 // TODO: Rename this regex...
 const filenameRegex = new RegExp(`\\${path.sep}[^\\${path.sep}]+$`);
+const csExtRgx = /\.cs$/;
 
 async function generateCSharpItem(templateType: TemplateType, contextualUri: vscode.Uri): Promise<void> {
 
@@ -21,11 +23,12 @@ async function generateCSharpItem(templateType: TemplateType, contextualUri: vsc
 
     const namespace = await getFullNamespace(newFileUri);
 
-    vscode.window.showInformationMessage(namespace);
-
-    // Get the namespace
-
-    // generate the template
+    const template: ItemFileTemplate = {
+        namespace: namespace,
+        objectType: TemplateType[templateType],
+        objectName: filename.replace(csExtRgx, ''),
+        usings: this.generateUsingStatementsTemplateValue(),
+    };
 }
 
 async function promptForFilename(templateType: TemplateType): Promise<string | undefined> {
@@ -155,6 +158,18 @@ async function getProjectFileUri(directoryUri: vscode.Uri): Promise<vscode.Uri> 
     projectFileUri = await getProjectFileUri(parentDirectoryUri);
 
     return projectFileUri;
+}
+
+function generateUsingStatementsTemplateValue(): string {
+    if (VSCodeConfiguration.isImplicitUsings || VSCodeConfiguration.namespacesToInclude.length === 0) {
+        return "";
+    }
+
+    const usingStatements = VSCodeConfiguration.namespacesToInclude.map(namespace => `using ${namespace};`);
+
+    const templateValue = `${usingStatements.join(EOL)}${EOL}${EOL}`;
+
+    return templateValue;
 }
 
 export { generateCSharpItem };
