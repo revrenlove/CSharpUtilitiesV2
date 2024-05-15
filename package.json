@@ -93,7 +93,37 @@
         "id": "c-sharp-utilities2.addItem",
         "label": "Add C# Item..."
       }
-    ]
+    ],
+    "configuration": {
+      "title": "C# Utilities",
+      "properties": {
+        "c-sharp-utilities2.newItemTemplate.fileScopedNamespace": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use File Scoped Namespaces for new C# items.",
+          "order": 0
+        },
+        "c-sharp-utilities2.newItemTemplate.includeUsingStatements": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include specified using statements for new C# items.",
+          "order": 1
+        },
+        "c-sharp-utilities2.newItemTemplate.namespacesToInclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "System",
+            "System.Collections.Generic",
+            "System.Text"
+          ],
+          "description": "Namespaces to include in a new C# item - this will only be used if the \"Include Using Statements\" setting is checked.",
+          "order": 2
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run esbuild-base -- --minify && npm run copy-static",
@@ -108,16 +138,16 @@
   },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
-    "@types/node": "18.x",
-    "@types/vscode": "^1.88.0",
-    "@typescript-eslint/eslint-plugin": "^7.4.0",
-    "@typescript-eslint/parser": "^7.4.0",
+    "@types/node": "^18.19.33",
+    "@types/vscode": "^1.89.0",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
     "@vscode/test-cli": "^0.0.8",
     "@vscode/test-electron": "^2.3.9",
     "copyfiles": "^2.4.1",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.5"
   },
   "dependencies": {
     "@revrenlove/easy-vscode-commands": "^1.0.3",
