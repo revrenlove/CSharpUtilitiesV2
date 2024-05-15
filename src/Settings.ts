@@ -1,3 +1,4 @@
+// TODO: JE - This needs to be NOT in the root `src` directory as it implies appsettings.json vibes
 import * as vscode from 'vscode';
 
 export default class Settings {

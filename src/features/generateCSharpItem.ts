@@ -1,9 +1,13 @@
+import { EOL } from "node:os";
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as util from '../util';
-import { TemplateType } from "../templates/TemplateType";
 import { cSharpProjectFactory } from '../factories/cSharpProjectFactory';
+import { TemplateType } from '../templates/TemplateType';
 import { ItemFileTemplate } from '../templates/ItemFileTemplate';
+import Settings from '../Settings';
+import { readFile, writeFile } from "../utilities/file-operations";
+import { Config } from "../Config";
 
 // TODO: Rename this regex...
 const filenameRegex = new RegExp(`\\${path.sep}[^\\${path.sep}]+$`);
@@ -27,8 +31,13 @@ async function generateCSharpItem(templateType: TemplateType, contextualUri: vsc
         namespace: namespace,
         objectType: TemplateType[templateType],
         objectName: filename.replace(csExtRgx, ''),
-        usings: this.generateUsingStatementsTemplateValue(),
+        usings: generateUsingStatementsTemplateValue(),
     };
+
+    const fileContentsString = await populateTemplate(template);
+
+    await writeFile(newFileUri, fileContentsString);
+    await openEditor(newFileUri);
 }
 
 async function promptForFilename(templateType: TemplateType): Promise<string | undefined> {
@@ -161,15 +170,73 @@ async function getProjectFileUri(directoryUri: vscode.Uri): Promise<vscode.Uri> 
 }
 
 function generateUsingStatementsTemplateValue(): string {
-    if (VSCodeConfiguration.isImplicitUsings || VSCodeConfiguration.namespacesToInclude.length === 0) {
+    if (Settings.isImplicitUsings || Settings.namespacesToInclude.length === 0) {
         return "";
     }
 
-    const usingStatements = VSCodeConfiguration.namespacesToInclude.map(namespace => `using ${namespace};`);
+    const usingStatements = Settings.namespacesToInclude.map(namespace => `using ${namespace};`);
 
     const templateValue = `${usingStatements.join(EOL)}${EOL}${EOL}`;
 
     return templateValue;
+}
+
+async function populateTemplate(templateValues: ItemFileTemplate): Promise<string> {
+
+    const templateUri = vscode.Uri.file(getTemplatePath());
+
+    let template = await readFile(templateUri);
+
+    for (const [placeholder, value] of Object.entries(templateValues)) {
+
+        const rgx = new RegExp(`%${placeholder}%`);
+
+        template = template.replace(rgx, value);
+    }
+
+    return template;
+}
+
+function getTemplatePath(): string {
+
+    let templatePath = Config.namespaceEncapsulatedTemplatePath;
+
+    if (Settings.isFileScopedNamespace) {
+        templatePath = Config.fileScopedNamespaceTemplatePath;
+    }
+
+    return templatePath;
+}
+
+async function openEditor(uri: vscode.Uri): Promise<void> {
+
+    const editor = await vscode.window.showTextDocument(uri);
+
+    const position = getCursorPosition(editor.document);
+
+    const newSelection = new vscode.Selection(position, position);
+
+    editor.selection = newSelection;
+}
+
+function getCursorPosition(document: vscode.TextDocument): vscode.Position {
+
+    let cursorLineNumber = 0;
+    let cursorColumnNumber = 0;
+
+    for (let lineNumber = 0; lineNumber < document.lineCount; lineNumber++) {
+        const line = document.lineAt(lineNumber);
+        if (line.text.includes("}")) {
+            cursorLineNumber = lineNumber - 1;
+            break;
+        }
+    }
+
+    cursorColumnNumber = document.lineAt(cursorLineNumber).text.length;
+
+    const position = new vscode.Position(cursorLineNumber, cursorColumnNumber);
+
+    return position;
 }
 
 export { generateCSharpItem };

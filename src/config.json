@@ -1,0 +1,4 @@
+{
+    "fileScopedNamespaceTemplatePath": "templates/file-scoped-namespace.tmpl",
+    "namespaceEncapsulatedTemplatePath": "templates/namespace-encapsulated.tmpl"
+}
