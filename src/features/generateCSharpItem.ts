@@ -5,11 +5,10 @@ import * as util from '../util';
 import { cSharpProjectFactory } from '../factories/cSharpProjectFactory';
 import { TemplateType } from '../templates/TemplateType';
 import { ItemFileTemplate } from '../templates/ItemFileTemplate';
-import Settings from '../Settings';
+import ExtensionUserSettings from '../ExtensionUserSettings';
 import { readFile, writeFile } from "../utilities/file-operations";
 import { Config } from "../Config";
 
-// TODO: Rename this regex...
 const filenameRegex = new RegExp(`\\${path.sep}[^\\${path.sep}]+$`);
 const csExtRgx = /\.cs$/;
 
@@ -170,11 +169,11 @@ async function getProjectFileUri(directoryUri: vscode.Uri): Promise<vscode.Uri> 
 }
 
 function generateUsingStatementsTemplateValue(): string {
-    if (Settings.isImplicitUsings || Settings.namespacesToInclude.length === 0) {
+    if (ExtensionUserSettings.isImplicitUsings || ExtensionUserSettings.namespacesToInclude.length === 0) {
         return "";
     }
 
-    const usingStatements = Settings.namespacesToInclude.map(namespace => `using ${namespace};`);
+    const usingStatements = ExtensionUserSettings.namespacesToInclude.map(namespace => `using ${namespace};`);
 
     const templateValue = `${usingStatements.join(EOL)}${EOL}${EOL}`;
 
@@ -201,7 +200,7 @@ function getTemplatePath(): string {
 
     let templatePath = Config.namespaceEncapsulatedTemplatePath;
 
-    if (Settings.isFileScopedNamespace) {
+    if (ExtensionUserSettings.isFileScopedNamespace) {
         templatePath = Config.fileScopedNamespaceTemplatePath;
     }
 

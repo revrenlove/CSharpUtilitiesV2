@@ -1,19 +1,6 @@
 import * as vscode from 'vscode';
 
-const errorCallback = (e: any) => {
-    let message: string;
-
-    if (e instanceof Error) {
-        message = e.message;
-    }
-    else {
-        message = `Here's the whole error object: ${JSON.stringify(e)}`;
-    }
-
-    vscode.window.showErrorMessage(message);
-};
-
-function handleGracefully(target: any, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+function handleGracefully(_target: any, _propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
@@ -28,5 +15,18 @@ function handleGracefully(target: any, propertyKey: string, descriptor: Property
 
     return descriptor;
 }
+
+const errorCallback = (e: any) => {
+    let message: string;
+
+    if (e instanceof Error) {
+        message = e.message;
+    }
+    else {
+        message = `Error: ${JSON.stringify(e)}`;
+    }
+
+    vscode.window.showErrorMessage(message);
+};
 
 export { handleGracefully };
