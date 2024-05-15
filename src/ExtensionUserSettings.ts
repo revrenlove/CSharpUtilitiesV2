@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-export default class Settings {
+export default class ExtensionUserSettings {
 
     static get isFileScopedNamespace(): boolean {
         const value = this.getConfigurationValue<boolean>('newItemTemplate.fileScopedNamespace');
