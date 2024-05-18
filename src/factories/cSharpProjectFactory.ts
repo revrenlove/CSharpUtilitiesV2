@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { XMLParser } from 'fast-xml-parser';
 import { CSharpProject } from '../models/cSharpProject';
-import { readFile } from '../utilities/file-operations';
+import * as util from '../utilities';
 
 type KeyedString = { [k: string]: string; };
 type KeyValuePair = { [k: string]: any };
@@ -13,7 +13,7 @@ const xmlParser = new XMLParser({ ignoreAttributes: false });
 async function cSharpProjectFactory(uri: vscode.Uri): Promise<CSharpProject> {
 
     const projectName = path.parse(uri.fsPath).name;
-    const fileContents = await readFile(uri);
+    const fileContents = await util.readFile(uri);
     const projectJson = xmlParser.parse(fileContents);
     const rootNamespace = getRootNamespace(projectJson) ?? projectName;
     const projectReferencePaths = getReferencePaths(projectJson, "ProjectReference", uri.fsPath);

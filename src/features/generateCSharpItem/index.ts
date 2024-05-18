@@ -1,13 +1,12 @@
 import { EOL } from "node:os";
 import * as path from 'path';
 import * as vscode from 'vscode';
-import * as util from '../util';
-import { cSharpProjectFactory } from '../factories/cSharpProjectFactory';
-import { TemplateType } from '../templates/TemplateType';
-import { ItemFileTemplate } from '../templates/ItemFileTemplate';
-import ExtensionUserSettings from '../ExtensionUserSettings';
-import { readFile, writeFile } from "../utilities/file-operations";
-import { Config } from "../Config";
+import { ItemFileTemplate } from "./itemFileTemplate";
+import { TemplateType } from "./templateType";
+import { cSharpProjectFactory } from "../../factories/cSharpProjectFactory";
+import ExtensionUserSettings from "../../extensionUserSettings";
+import * as util from '../../utilities';
+import { TemplatePaths } from "../../constants";
 
 const filenameRegex = new RegExp(`\\${path.sep}[^\\${path.sep}]+$`);
 const csExtRgx = /\.cs$/;
@@ -35,7 +34,7 @@ async function generateCSharpItem(templateType: TemplateType, contextualUri: vsc
 
     const fileContentsString = await populateTemplate(template);
 
-    await writeFile(newFileUri, fileContentsString);
+    await util.writeFile(newFileUri, fileContentsString);
     await openEditor(newFileUri);
 }
 
@@ -184,7 +183,7 @@ async function populateTemplate(templateValues: ItemFileTemplate): Promise<strin
 
     const templateUri = vscode.Uri.file(getTemplatePath());
 
-    let template = await readFile(templateUri);
+    let template = await util.readFile(templateUri);
 
     for (const [placeholder, value] of Object.entries(templateValues)) {
 
@@ -198,10 +197,10 @@ async function populateTemplate(templateValues: ItemFileTemplate): Promise<strin
 
 function getTemplatePath(): string {
 
-    let templatePath = Config.namespaceEncapsulatedTemplatePath;
+    let templatePath = TemplatePaths.namespaceEncapsulated;
 
     if (ExtensionUserSettings.isFileScopedNamespace) {
-        templatePath = Config.fileScopedNamespaceTemplatePath;
+        templatePath = TemplatePaths.fileScopedNamespace;
     }
 
     return templatePath;
