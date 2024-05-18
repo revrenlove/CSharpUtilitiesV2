@@ -1,9 +1,9 @@
 import { EasyVsCodeCommand } from "@revrenlove/easy-vscode-commands";
-import { AddClassCommand } from "./AddClassCommand";
-import { AddEnumCommand } from "./AddEnumCommand";
-import { AddInterfaceCommand } from "./AddInterfaceCommand";
-import { AddRecordCommand } from "./AddRecordCommand";
-import { AddStructCommand } from "./AddStructCommand";
+import { AddClassCommand } from "./addClassCommand";
+import { AddEnumCommand } from "./addEnumCommand";
+import { AddInterfaceCommand } from "./addInterfaceCommand";
+import { AddRecordCommand } from "./addRecordCommand";
+import { AddStructCommand } from "./addStructCommand";
 
 const addItemCommands: EasyVsCodeCommand[] = [
     AddClassCommand,
