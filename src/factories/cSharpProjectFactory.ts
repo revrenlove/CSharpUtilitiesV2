@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { XMLParser } from 'fast-xml-parser';
-import { CSharpProject } from '../models/CSharpProject';
+import { CSharpProject } from '../models/cSharpProject';
 import { readFile } from '../utilities/file-operations';
 
 type KeyedString = { [k: string]: string; };
