@@ -11,9 +11,5 @@
     "editor.codeActionsOnSave": {
         "source.fixAll": "explicit"
     },
-    "cSpell.words": [
-        "copyfiles",
-        "outfile",
-        "tmpl"
-    ]
+    "cSpell.words": ["Affordance", "copyfiles", "outfile", "tmpl"]
 }

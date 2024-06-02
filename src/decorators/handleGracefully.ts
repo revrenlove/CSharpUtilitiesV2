@@ -1,6 +1,7 @@
-import * as vscode from 'vscode';
+import { errorCallback } from '../error/errorCallback';
 
 function handleGracefully(_target: any, _propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
@@ -9,24 +10,11 @@ function handleGracefully(_target: any, _propertyKey: string, descriptor: Proper
             return result;
         }
         catch (e) {
-            errorCallback(e);
+            await errorCallback(e as Error);
         }
     };
 
     return descriptor;
 }
-
-const errorCallback = (e: any) => {
-    let message: string;
-
-    if (e instanceof Error) {
-        message = e.message;
-    }
-    else {
-        message = `Error: ${JSON.stringify(e)}`;
-    }
-
-    vscode.window.showErrorMessage(message);
-};
 
 export { handleGracefully };
