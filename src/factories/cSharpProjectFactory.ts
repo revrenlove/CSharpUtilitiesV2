@@ -10,7 +10,6 @@ type JsonNode = KeyValuePair[] | KeyValuePair | undefined;
 
 const xmlParser = new XMLParser({ ignoreAttributes: false });
 
-// TODO: JE - try/catch on if the uri actually exists...
 async function cSharpProjectFactory(uri: vscode.Uri): Promise<CSharpProject> {
 
     const projectName = path.parse(uri.fsPath).name;
