@@ -1,10 +1,13 @@
 import * as vscode from 'vscode';
+import { DotnetCommand } from '../models/dotnetCommand';
 
 const terminalName = 'dotnet';
 
-function executeCommand(directoryPath: string, command: string, ...commandArgs: string[]): void {
+function executeCommand(directoryPath: string, dotnetCommand: DotnetCommand, ...commandArgs: string[]) {
 
     const terminal = ensureTerminal(directoryPath);
+
+    let command = `dotnet ${dotnetCommand}`;
 
     if (commandArgs && commandArgs.length > 0) {
         command += ` ${commandArgs.join(' ')}`;

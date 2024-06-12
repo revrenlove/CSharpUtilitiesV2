@@ -1,22 +1,16 @@
+// TODO: JE - Check the exports on this whole damn file!!!
+
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { CsprojFileQuickPickItem } from '../../models/csprojFileQuickPickItem';
-import { cSharpProjectFactory } from '../../factories/cSharpProjectFactory';
 import { CSharpProject } from '../../models/cSharpProject';
 import { ReferenceChangeResult } from '../../models/referenceChangeResult';
 import { TreeNode } from '../../models/treeNode';
 import { buildProjectReferenceTree } from './buildProjectReferenceTree';
-
-async function showProjectReferenceQuickPick(contextualProjectUri: vscode.Uri): Promise<void> {
-
-    // Get all the projects that are in the workspace...
-
-    // for each project in the workspace, 
-    //  determine whether or not adding said project as a reference to the contextual project will create a circular reference,
-    //  and if so, don't include that in the results....
-
-    // TODO: JE - We are gonna need to performance test this... with like 100 projects
-}
+import { CircularReferenceError } from '../../error/circularReferenceError';
+import { cSharpProjectFactory } from '../../factories/cSharpProjectFactory';
+import { DotnetCommand } from '../../models/dotnetCommand';
+import { executeCommand } from '../../utilities/dotnetTerminalOperations';
 
 async function renameThisFunction(contextualProjectUri: vscode.Uri): Promise<void> {
 
@@ -30,7 +24,6 @@ async function renameThisFunction(contextualProjectUri: vscode.Uri): Promise<voi
     }
 
     const selectedProjectUris = selectedProjectItems.map(i => i.uri);
-
     const referenceChangeResult = getReferenceChangeResult(contextualProject.projectReferenceUris, selectedProjectUris);
 
     // Selected projects didn't change but Ok was clicked.
@@ -38,31 +31,15 @@ async function renameThisFunction(contextualProjectUri: vscode.Uri): Promise<voi
         return;
     }
 
-    contextualProject.projectReferenceUris = selectedProjectUris;
+    // TODO: JE - We might not actually need this???
+    if (!await isValidReferenceTree(contextualProject, selectedProjectUris)) {
+        return;
+    }
 
-    let projectRootTreeNode = new TreeNode(contextualProject);
-
-    projectRootTreeNode = await buildProjectReferenceTree(projectRootTreeNode);
-
-
-
-
-
-
-
-    // try {
-
-
-
-    //     // const x = new TreeNode()
-    // }
-    // catch (e) {
-
-    // }
+    updateReferences(contextualProject, referenceChangeResult);
 }
 
-// TODO: JE - Only show projects that WON'T create a circular reference...
-async function showProjectReferenceQuickPickOLD(contextualProject: CSharpProject): Promise<CsprojFileQuickPickItem[] | undefined> {
+export async function showProjectReferenceQuickPickOLD(contextualProject: CSharpProject): Promise<CsprojFileQuickPickItem[] | undefined> {
 
     const availableProjectUris = await getAllProjectUrisInWorkspace(contextualProject.uri);
 
@@ -130,7 +107,7 @@ function uriToQuickPick(uri: vscode.Uri, picked: boolean = false): CsprojFileQui
     return quickPickItem;
 }
 
-function getReferenceChangeResult(initialUris: vscode.Uri[], finalUris: vscode.Uri[]): ReferenceChangeResult {
+export function getReferenceChangeResult(initialUris: vscode.Uri[], finalUris: vscode.Uri[]): ReferenceChangeResult {
 
     const projectUrisToAdd = finalUris.filter(finalUri => !initialUris.some(initialUri => initialUri.fsPath === finalUri.fsPath));
 
@@ -141,6 +118,45 @@ function getReferenceChangeResult(initialUris: vscode.Uri[], finalUris: vscode.U
     return referenceChangeResult;
 }
 
+// TODO: DO WE NEED THIS????
+export async function isValidReferenceTree(cSharpProject: CSharpProject, selectedProjectUris: vscode.Uri[]): Promise<boolean> {
+    if (selectedProjectUris.length === 0) {
+        return true;
+    }
+
+    cSharpProject.projectReferenceUris = selectedProjectUris;
+
+    let projectRootTreeNode = new TreeNode(cSharpProject);
+
+    try {
+        await buildProjectReferenceTree(projectRootTreeNode);
+    }
+    catch (e) {
+        if (!(e instanceof CircularReferenceError)) {
+            throw e;
+        }
+
+        vscode.window.showErrorMessage(e.message);
+
+        return false;
+    }
+
+    return true;
+}
+
+function updateReferences(cSharpProject: CSharpProject, referenceChangeResult: ReferenceChangeResult): void {
+
+    const directoryPath = path.dirname(cSharpProject.uri.fsPath);
+
+    if (referenceChangeResult.projectUrisToRemove.length > 0) {
+        executeCommand(directoryPath, DotnetCommand.RemoveReference, ...referenceChangeResult.projectUrisToRemove.map(u => `"${u.fsPath}"`));
+    }
+
+    if (referenceChangeResult.projectUrisToAdd.length > 0) {
+        executeCommand(directoryPath, DotnetCommand.AddReference, ...referenceChangeResult.projectUrisToAdd.map(u => `"${u.fsPath}"`));
+    }
+}
+
 // TODO: JE - We might not need to export this function...
 // TODO: JE -  RENAME THIS WHOLE FUCKING FILE!!!!!
-export { showProjectReferenceQuickPickOLD as showProjectReferenceQuickPick };
+// export { showProjectReferenceQuickPickOLD as showProjectReferenceQuickPick };

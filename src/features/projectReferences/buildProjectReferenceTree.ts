@@ -1,6 +1,7 @@
 import { TreeNode } from "../../models/treeNode";
 import { CSharpProject } from "../../models/cSharpProject";
 import { cSharpProjectFactory } from '../../factories/cSharpProjectFactory';
+import { CircularReferenceError } from "../../error/circularReferenceError";
 
 async function buildProjectReferenceTree(node: TreeNode<CSharpProject>): Promise<TreeNode<CSharpProject>> {
 
@@ -13,8 +14,7 @@ async function buildProjectReferenceTree(node: TreeNode<CSharpProject>): Promise
         let child = new TreeNode(childProject, node);
 
         if (child.isCircular()) {
-            // TODO: JE - This needs to be a custom error
-            throw new Error(`Circular Reference Detected: ${child.value.name}`);
+            throw new CircularReferenceError(`Circular Reference Detected: ${child.value.name}`);
         }
 
         child = await buildProjectReferenceTree(child);
