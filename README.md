@@ -1,3 +1,3 @@
-# whatever README
+`npm i`
 
-Fill this out
+`npm run esbuild`
