@@ -39,6 +39,11 @@
             {
                 "command": "c-sharp-utilities2.addInterface",
                 "title": "Add Interface"
+            },
+            {
+                "command": "c-sharp-utilities2.manageProjectReferences",
+                "title": "Manage Project References...",
+                "icon": "$(edit)"
             }
         ],
         "menus": {
@@ -85,6 +90,10 @@
                 {
                     "submenu": "c-sharp-utilities2.addItem",
                     "when": "resourceExtname == .csproj || resourceExtname == .cs || explorerResourceIsFolder"
+                },
+                {
+                    "command": "c-sharp-utilities2.manageProjectReferences",
+                    "when": "resourceExtname == .csproj"
                 }
             ]
         },

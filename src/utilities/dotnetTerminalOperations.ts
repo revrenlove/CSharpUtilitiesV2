@@ -3,6 +3,8 @@ import { DotnetCommand } from '../models/dotnetCommand';
 
 const terminalName = 'dotnet';
 
+// TODO: JE - This may possibly need to change...
+//              https://github.com/microsoft/vscode-discussions/discussions/1231
 function executeCommand(directoryPath: string, dotnetCommand: DotnetCommand, ...commandArgs: string[]) {
 
     const terminal = ensureTerminal(directoryPath);

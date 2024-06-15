@@ -115,6 +115,7 @@ function getReferenceChangeResult(initialUris: vscode.Uri[], finalUris: vscode.U
     return referenceChangeResult;
 }
 
+// TODO: JE - This seems to be inconsistent... If A references B and then B tries to reference A, it appears to allow it??? Maybe?
 async function isValidReferenceTree(cSharpProject: CSharpProject, selectedProjectUris: vscode.Uri[]): Promise<boolean> {
 
     if (selectedProjectUris.length === 0) {
