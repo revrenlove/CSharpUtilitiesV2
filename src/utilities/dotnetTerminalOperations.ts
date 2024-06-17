@@ -22,14 +22,12 @@ function ensureTerminal(path: string): vscode.Terminal {
 
     let terminal: vscode.Terminal | undefined;
 
-    vscode
-        .window
-        .terminals
-        .forEach(t => {
-            if (t.name === terminalName) {
-                terminal = t;
-            }
-        });
+    for (let t of vscode.window.terminals) {
+        if (t.name === terminalName) {
+            terminal = t;
+            break;
+        }
+    }
 
     if (!terminal) {
 
