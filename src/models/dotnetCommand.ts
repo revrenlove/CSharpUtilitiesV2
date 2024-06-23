@@ -1,4 +1,4 @@
 export enum DotnetCommand {
-    AddReference = 'add reference',
-    RemoveReference = 'remove reference'
+    AddProjectReference = 'add reference',
+    RemoveProjectReference = 'remove reference'
 }

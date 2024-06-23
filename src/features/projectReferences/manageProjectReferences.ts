@@ -6,9 +6,9 @@ import { ReferenceChangeResult } from '../../models/referenceChangeResult';
 import { TreeNode } from '../../models/treeNode';
 import { CircularReferenceError } from '../../error/circularReferenceError';
 import { cSharpProjectFactory } from '../../factories/cSharpProjectFactory';
-import { DotnetCommand } from '../../models/dotnetCommand';
-import { executeCommand } from '../../utilities/dotnetTerminalOperations';
 import { buildProjectReferenceTree } from '.';
+import * as dotnetShellOperations from '../../utilities/dotnetShellOperations';
+import { CSharpUtilitiesExtensionError } from '../../error/cSharpUtilitiesExtensionError';
 
 async function manageProjectReferences(contextualProjectUri: vscode.Uri): Promise<void> {
 
@@ -29,11 +29,13 @@ async function manageProjectReferences(contextualProjectUri: vscode.Uri): Promis
         return;
     }
 
+    // The dotnet CLI _will_ allow you to add circular references, so this 
+    //  preemptively checks for that.
     if (!await isValidReferenceTree(contextualProject, selectedProjectUris)) {
         return;
     }
 
-    updateReferences(contextualProject, referenceChangeResult);
+    await updateProjectReferences(contextualProject, referenceChangeResult);
 }
 
 async function showProjectReferenceQuickPick(contextualProject: CSharpProject): Promise<CsprojFileQuickPickItem[] | undefined> {
@@ -116,6 +118,7 @@ function getReferenceChangeResult(initialUris: vscode.Uri[], finalUris: vscode.U
 }
 
 // TODO: JE - This seems to be inconsistent... If A references B and then B tries to reference A, it appears to allow it??? Maybe?
+// TODO: JE - We need to figure out a unit test around this shit...
 async function isValidReferenceTree(cSharpProject: CSharpProject, selectedProjectUris: vscode.Uri[]): Promise<boolean> {
 
     if (selectedProjectUris.length === 0) {
@@ -149,23 +152,60 @@ async function isValidReferenceTree(cSharpProject: CSharpProject, selectedProjec
     return true;
 }
 
-function updateReferences(cSharpProject: CSharpProject, referenceChangeResult: ReferenceChangeResult): void {
-
-    const directoryPath = path.dirname(cSharpProject.uri.fsPath);
+// TODO: JE - Figure out how to handle output/errors (in conjunction with `executeDotnetCommand(...)`)
+async function updateProjectReferences(cSharpProject: CSharpProject, referenceChangeResult: ReferenceChangeResult): Promise<void> {
 
     if (referenceChangeResult.projectUrisToRemove.length > 0) {
 
-        const projectPathArguments = referenceChangeResult.projectUrisToRemove.map(u => `"${u.fsPath}"`);
-
-        executeCommand(directoryPath, DotnetCommand.RemoveReference, ...projectPathArguments);
+        await removeProjectReferences(cSharpProject.uri, referenceChangeResult.projectUrisToRemove);
     }
 
     if (referenceChangeResult.projectUrisToAdd.length > 0) {
 
-        const projectPathArguments = referenceChangeResult.projectUrisToAdd.map(u => `"${u.fsPath}"`);
-
-        executeCommand(directoryPath, DotnetCommand.AddReference, ...projectPathArguments);
+        await addProjectReferences(cSharpProject.uri, referenceChangeResult.projectUrisToAdd);
     }
+}
+
+async function removeProjectReferences(rootProjectUri: vscode.Uri, removedProjectUris: vscode.Uri[]): Promise<void> {
+
+    const progressOptions: vscode.ProgressOptions = {
+        location: vscode.ProgressLocation.Notification,
+        title: "Removing Projects...",
+    };
+
+    const removeProjectReferencesCallback = async (): Promise<dotnetShellOperations.ExecResult> => {
+        return await dotnetShellOperations.removeProjectReferences(rootProjectUri, removedProjectUris);
+    };
+
+    const result = await vscode.window.withProgress(progressOptions, removeProjectReferencesCallback);
+
+    handleExecResult(result);
+}
+
+async function addProjectReferences(rootProjectUri: vscode.Uri, addedProjectUris: vscode.Uri[]): Promise<void> {
+
+    const progressOptions: vscode.ProgressOptions = {
+        location: vscode.ProgressLocation.Notification,
+        title: "Adding Projects...",
+    };
+
+    const addProjectReferencesCallback = async (): Promise<dotnetShellOperations.ExecResult> => {
+        return await dotnetShellOperations.addProjectReferences(rootProjectUri, addedProjectUris);
+    };
+
+    const result = await vscode.window.withProgress(progressOptions, addProjectReferencesCallback);
+
+    handleExecResult(result);
+}
+
+function handleExecResult(result: dotnetShellOperations.ExecResult) {
+
+    if (result.stderr) {
+        // TODO: Figure out _exactly_ what to do...
+        throw new CSharpUtilitiesExtensionError(result.stderr);
+    }
+
+    vscode.window.showInformationMessage(result.stdout);
 }
 
 export { manageProjectReferences };
