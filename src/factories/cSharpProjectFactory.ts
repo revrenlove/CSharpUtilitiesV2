@@ -22,7 +22,6 @@ async function cSharpProjectFactory(uri: vscode.Uri): Promise<CSharpProject> {
         name: projectName,
         uri: uri,
         rootNamespace: rootNamespace,
-        projectReferencePaths: projectReferencePaths,
         projectReferenceUris: projectReferencePaths.map(p => vscode.Uri.file(p))
     };
 

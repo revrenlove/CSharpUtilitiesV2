@@ -16,7 +16,7 @@
         ],
         "@typescript-eslint/semi": "warn",
         "curly": "warn",
-        "eqeqeq": "warn",
+        "eqeqeq": "error",
         "no-throw-literal": "warn",
         "semi": "off",
         "eol-last": "error"
