@@ -3,6 +3,8 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import { DotnetCommand } from '../models/dotnetCommand';
 import { getParentDirectoryPath } from './fileOperations';
+import { CSharpUtilitiesExtensionError } from '../error/cSharpUtilitiesExtensionError';
+import { EOL } from 'node:os';
 
 const execAsync = promisify(exec);
 
@@ -12,29 +14,53 @@ type ExecResult = {
 };
 
 async function addProjectReferences(
-    rootProjectUri: vscode.Uri,
+    targetProjectUri: vscode.Uri,
     addedProjectUris: vscode.Uri[]): Promise<ExecResult> {
 
-    const directoryPath = getParentDirectoryPath(rootProjectUri);
+    const directoryPath = getParentDirectoryPath(targetProjectUri);
     const command = DotnetCommand.AddProjectReference;
     const projectPaths = addedProjectUris.map(u => u.fsPath);
 
-    const commandResult = executeDotnetCommand(directoryPath, command, ...projectPaths);
+    const commandResult = await executeDotnetCommand(directoryPath, command, ...projectPaths);
 
     return commandResult;
 }
 
 async function removeProjectReferences(
-    rootProjectUri: vscode.Uri,
+    targetProjectUri: vscode.Uri,
     removedProjectUris: vscode.Uri[]): Promise<ExecResult> {
 
-    const directoryPath = getParentDirectoryPath(rootProjectUri);
+    const directoryPath = getParentDirectoryPath(targetProjectUri);
     const command = DotnetCommand.RemoveProjectReference;
     const projectPaths = removedProjectUris.map(u => u.fsPath);
 
-    const commandResult = executeDotnetCommand(directoryPath, command, ...projectPaths);
+    const commandResult = await executeDotnetCommand(directoryPath, command, ...projectPaths);
 
     return commandResult;
+}
+
+// TODO: JE - Figure out if we want to handle all of the error shit in this file...
+// TODO: JE - That would mean tweaking the other functions in this file.
+async function listProjectReferences(targetProjectUri: vscode.Uri): Promise<vscode.Uri[]> {
+    const directoryPath = getParentDirectoryPath(targetProjectUri);
+    const command = DotnetCommand.ListProjectReferences;
+
+    const commandResult = await executeDotnetCommand(directoryPath, command);
+
+    if (commandResult.stderr) {
+        throw new CSharpUtilitiesExtensionError(commandResult.stderr);
+    }
+
+    const outputLines = commandResult.stdout.split(EOL);
+
+    // There are no Project to Project references in project C:\Users\elrod\src\RxTracker\RevrenLove.RxTracker.Models\.
+
+    // Project reference(s)
+    // --------------------
+    // ..\RevrenLove.RxTracker.Models\RevrenLove.RxTracker.Models.csproj
+    // ..\RevrenLove.RxTracker.Persistence\RevrenLove.RxTracker.Persistence.csproj        
+    // ..\RevrenLove.RxTracker.Services\RevrenLove.RxTracker.Services.csproj
+    return [];
 }
 
 async function executeDotnetCommand(

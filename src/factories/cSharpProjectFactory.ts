@@ -1,8 +1,10 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import { parseStringPromise } from 'xml2js';
 import { XMLParser } from 'fast-xml-parser';
 import { CSharpProject } from '../models/cSharpProject';
 import * as util from '../utilities';
+import { document } from '../models/csprojFile/2003';
 
 type KeyedString = { [k: string]: string; };
 type KeyValuePair = { [k: string]: any };
@@ -10,57 +12,57 @@ type JsonNode = KeyValuePair[] | KeyValuePair | undefined;
 
 const xmlParser = new XMLParser({ ignoreAttributes: false });
 
-async function cSharpProjectFactory(uri: vscode.Uri): Promise<CSharpProject> {
+async function cSharpProjectFactory(csprojUri: vscode.Uri): Promise<CSharpProject> {
 
-    const projectName = path.parse(uri.fsPath).name;
-    const fileContents = await util.readFile(uri);
-    const projectJson = xmlParser.parse(fileContents);
-    const rootNamespace = getRootNamespace(projectJson) ?? projectName;
-    const projectReferencePaths = getReferencePaths(projectJson, "ProjectReference", uri.fsPath);
+    const projectName = path.parse(csprojUri.fsPath).name;
+    // const fileContents = await util.readFile(uri);
+    // const projectJson = xmlParser.parse(fileContents);
+    // const rootNamespace = getRootNamespace(projectJson) ?? projectName;
+    const rootNamespace = await getRootNamespace(csprojUri) ?? projectName;
+    // const projectReferencePaths = getReferencePaths(projectJson, "ProjectReference", csprojUri.fsPath);
+
+    const projectReferenceUris = getProjectReferenceUris();
 
     const cSharpProject: CSharpProject = {
         name: projectName,
-        uri: uri,
+        uri: csprojUri,
         rootNamespace: rootNamespace,
-        projectReferenceUris: projectReferencePaths.map(p => vscode.Uri.file(p))
+        projectReferenceUris: projectReferenceUris,
     };
 
     return cSharpProject;
 }
 
-function getRootNamespace(json: any): string | undefined {
-    const propertyGroupNode: JsonNode = json?.Project?.PropertyGroup;
+async function getRootNamespace(csprojUri: vscode.Uri): Promise<string | undefined> {
 
-    if (!propertyGroupNode) {
+    const xml = await util.readFile(csprojUri);
+
+    const csprojDocument = await parseStringPromise(xml) as document;
+
+    const propertyGroups = csprojDocument.Project.PropertyGroup;
+
+    if (!propertyGroups) {
         return;
     }
 
-    let namespace: string | undefined;
+    const propertyGroup = propertyGroups.find(p => p.Property && p.Property.some(property => property.RootNamespace));
 
-    if (!Array.isArray(propertyGroupNode)) {
-
-        namespace = propertyGroupNode.RootNamespace;
-
-        return namespace;
+    if (!propertyGroup) {
+        return;
     }
 
-    for (let i = 0; i < propertyGroupNode.length; i++) {
+    const propertyProxy = propertyGroup.Property!.find(p => p.RootNamespace)!;
 
-        if (!propertyGroupNode[i].RootNamespace) {
-            continue;
-        }
+    const rootNamespace = propertyProxy.RootNamespace!.content;
 
-        if (!namespace) {
-            namespace = propertyGroupNode[i].RootNamespace;
-            continue;
-        }
+    return rootNamespace;
+}
 
-        if (namespace !== propertyGroupNode[i].RootNamespace) {
-            namespace = undefined;
-        }
-    }
+function getProjectReferenceUris(): vscode.Uri[] {
 
-    return namespace;
+
+
+    return [];
 }
 
 function getReferencePaths(json: any, elementName: string, projectPath: string): string[] {

@@ -143,12 +143,14 @@
         "lint": "eslint src --ext ts",
         "copy-static": "copyfiles -u 1 ./**/*.tmpl ./out",
         "deploy": "vsce publish",
-        "package": "vsce package"
+        "package": "vsce package",
+        "test": "vscode-test"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.6",
         "@types/node": "^18.19.33",
         "@types/vscode": "^1.89.0",
+        "@types/xml2js": "^0.4.14",
         "@typescript-eslint/eslint-plugin": "^7.8.0",
         "@typescript-eslint/parser": "^7.8.0",
         "@vscode/test-cli": "^0.0.8",
@@ -161,6 +163,7 @@
     },
     "dependencies": {
         "@revrenlove/easy-vscode-commands": "^1.0.3",
-        "fast-xml-parser": "^4.3.6"
+        "fast-xml-parser": "^4.3.6",
+        "xml2js": "^0.6.2"
     }
 }
