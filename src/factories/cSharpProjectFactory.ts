@@ -5,6 +5,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { CSharpProject } from '../models/cSharpProject';
 import * as util from '../utilities';
 import { document } from '../models/csprojFile/2003';
+import { listProjectReferences } from '../utilities/dotnetShellOperations';
 
 type KeyedString = { [k: string]: string; };
 type KeyValuePair = { [k: string]: any };
@@ -21,7 +22,7 @@ async function cSharpProjectFactory(csprojUri: vscode.Uri): Promise<CSharpProjec
     const rootNamespace = await getRootNamespace(csprojUri) ?? projectName;
     // const projectReferencePaths = getReferencePaths(projectJson, "ProjectReference", csprojUri.fsPath);
 
-    const projectReferenceUris = getProjectReferenceUris();
+    const projectReferenceUris = await getProjectReferenceUris(csprojUri);
 
     const cSharpProject: CSharpProject = {
         name: projectName,
@@ -58,9 +59,9 @@ async function getRootNamespace(csprojUri: vscode.Uri): Promise<string | undefin
     return rootNamespace;
 }
 
-function getProjectReferenceUris(): vscode.Uri[] {
-
-
+async function getProjectReferenceUris(csprojUri: vscode.Uri): Promise<vscode.Uri[]> {
+    // TODO: JE - Finish implementing this... or figure out what the fuck is going on here...
+    const x = await listProjectReferences(csprojUri);
 
     return [];
 }
@@ -112,4 +113,8 @@ function relativePathToAbsolutePath(relativePath: string, projectPath: string): 
     return absolutePath;
 }
 
-export { cSharpProjectFactory };
+export default cSharpProjectFactory;
+
+// TODO: JE - Document how this export/testing pattern works
+const testableFunctions = { getProjectReferenceUris, relativePathToAbsolutePath };
+export { testableFunctions as cSharpProjectFactoryInternalFunctions };

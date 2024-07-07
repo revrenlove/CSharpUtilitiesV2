@@ -5,7 +5,7 @@ import { CSharpProject } from '../../models/cSharpProject';
 import { ReferenceChangeResult } from '../../models/referenceChangeResult';
 import { TreeNode } from '../../models/treeNode';
 import { CircularReferenceError } from '../../error/circularReferenceError';
-import { cSharpProjectFactory } from '../../factories/cSharpProjectFactory';
+import cSharpProjectFactory from '../../factories/cSharpProjectFactory';
 import { buildProjectReferenceTree } from '.';
 import * as dotnetShellOperations from '../../utilities/dotnetShellOperations';
 import { CSharpUtilitiesExtensionError } from '../../error/cSharpUtilitiesExtensionError';

@@ -42,9 +42,11 @@ async function removeProjectReferences(
 // TODO: JE - Figure out if we want to handle all of the error shit in this file...
 // TODO: JE - That would mean tweaking the other functions in this file.
 async function listProjectReferences(targetProjectUri: vscode.Uri): Promise<vscode.Uri[]> {
+
     const directoryPath = getParentDirectoryPath(targetProjectUri);
     const command = DotnetCommand.ListProjectReferences;
 
+    // BUG: JE - I think it's breaking on this because `dotnet` isn't installed maybe?
     const commandResult = await executeDotnetCommand(directoryPath, command);
 
     if (commandResult.stderr) {
@@ -52,6 +54,9 @@ async function listProjectReferences(targetProjectUri: vscode.Uri): Promise<vsco
     }
 
     const outputLines = commandResult.stdout.split(EOL);
+
+    // TODO: JE - Remove console logs...
+    console.log(outputLines);
 
     // There are no Project to Project references in project C:\Users\elrod\src\RxTracker\RevrenLove.RxTracker.Models\.
 
@@ -77,4 +82,4 @@ async function executeDotnetCommand(
     return await execAsync(command, { "cwd": directoryPath });
 }
 
-export { executeDotnetCommand, addProjectReferences, removeProjectReferences, ExecResult };
+export { executeDotnetCommand, addProjectReferences, removeProjectReferences, listProjectReferences, ExecResult };

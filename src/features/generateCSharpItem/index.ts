@@ -3,10 +3,11 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { ItemFileTemplate } from "./itemFileTemplate";
 import { TemplateType } from "./templateType";
-import { cSharpProjectFactory } from "../../factories/cSharpProjectFactory";
+import cSharpProjectFactory from "../../factories/cSharpProjectFactory";
 import ExtensionUserSettings from "../../extensionUserSettings";
 import * as util from '../../utilities';
 import { TemplatePaths } from "../../constants";
+import { CSharpUtilitiesExtensionError } from "../../error/cSharpUtilitiesExtensionError";
 
 const filenameRegex = new RegExp(`\\${path.sep}[^\\${path.sep}]+$`);
 const csExtRgx = /\.cs$/;
@@ -20,7 +21,7 @@ async function generateCSharpItem(templateType: TemplateType, contextualUri: vsc
     const newFileUri = await getNewFileUri(filename, contextualUri);
 
     if (await fileExists(newFileUri)) {
-        throw new Error(`File already exists: ${newFileUri.fsPath}`);
+        throw new CSharpUtilitiesExtensionError(`File already exists: ${newFileUri.fsPath}`);
     }
 
     const namespace = await getFullNamespace(newFileUri);
