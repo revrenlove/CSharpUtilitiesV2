@@ -139,12 +139,17 @@
         "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
         "esbuild": "npm run esbuild-base -- --sourcemap && npm run copy-static",
         "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
-        "test-compile": "tsc -p ./",
+        "test-compile": "tsc -p ./ --outdir ./out.tests",
         "lint": "eslint src --ext ts",
         "copy-static": "copyfiles -u 1 ./**/*.tmpl ./out",
         "deploy": "vsce publish",
         "package": "vsce package",
-        "test": "vscode-test"
+        "test": "vscode-test",
+        "pretest": "npm run clean-tests",
+        "clean": "npm run clean-node-modules && npm run clean-out && npm run clean-tests",
+        "clean-node-modules": "rm -rf node_modules && npm i",
+        "clean-out": "rm -rf out && npm run esbuild",
+        "clean-tests": "rm -rf out.tests && npm run test-compile"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.6",
