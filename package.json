@@ -143,7 +143,9 @@
         "lint": "eslint src --ext ts",
         "copy-static": "copyfiles -u 1 ./**/*.tmpl ./out",
         "deploy": "vsce publish",
-        "package": "vsce package"
+        "package": "vsce package",
+        "test": "vscode-test",
+        "pretest": "npm run test-compile"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.6",
