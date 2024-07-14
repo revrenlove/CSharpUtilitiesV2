@@ -13,7 +13,7 @@
     "activationEvents": [
         "onStartupFinished"
     ],
-    "main": "./out/main.js",
+    "main": "./out/extension.js",
     "contributes": {
         "commands": [
             {
@@ -136,16 +136,15 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run esbuild-base -- --minify && npm run copy-static",
-        "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+        "esbuild-base": "esbuild ./src/extension.ts ./src/test/**/*.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node --tsconfig=tsconfig.json",
         "esbuild": "npm run esbuild-base -- --sourcemap && npm run copy-static",
         "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
-        "test-compile": "tsc -p ./",
         "lint": "eslint src --ext ts",
         "copy-static": "copyfiles -u 1 ./**/*.tmpl ./out",
         "deploy": "vsce publish",
         "package": "vsce package",
-        "test": "vscode-test",
-        "pretest": "npm run test-compile"
+        "pretest": "npm run esbuild",
+        "test": "vscode-test"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.6",
