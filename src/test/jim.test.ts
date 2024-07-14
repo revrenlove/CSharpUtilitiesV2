@@ -4,9 +4,7 @@ import * as vscode from 'vscode';
 
 suite('Jim Test Suite', () => {
     test('Jim test', () => {
-        // throw new Error("AAAAA");
-        // assert.strictEqual(-1, [1, 2, 3].indexOf(5));
-        // assert.strictEqual(-1, [1, 2, 3].indexOf(0));
+        // TODO: JE - Delete this file
 
         const x = capitalizeFirstLetter("hi");
         assert.strictEqual(x, "Hi");
