@@ -135,16 +135,20 @@
         }
     },
     "scripts": {
-        "vscode:prepublish": "npm run esbuild-base -- --minify && npm run copy-static",
+        "vscode:prepublish": "rm -rf out && esbuild ./src/extension.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node --minify && npm run copy-static",
         "esbuild-base": "esbuild ./src/extension.ts ./src/test/**/*.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node",
         "esbuild": "npm run esbuild-base -- --sourcemap && npm run copy-static",
-        "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+        "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch && npm run copy-static",
         "lint": "eslint src --ext ts",
+        "copy-test-assets": "copyfiles -u 3 ./src/test/assets/* ./out/test/assets",
         "copy-static": "copyfiles -u 1 ./**/*.tmpl ./out",
         "deploy": "vsce publish",
         "package": "vsce package",
-        "pretest": "npm run esbuild",
-        "test": "vscode-test"
+        "pretest": "npm run clean && npm run copy-test-assets",
+        "test": "vscode-test",
+        "clean": "npm run clean-node-modules && npm run clean-out",
+        "clean-node-modules": "rm -rf node_modules && npm i",
+        "clean-out": "rm -rf out && npm run esbuild"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.6",
