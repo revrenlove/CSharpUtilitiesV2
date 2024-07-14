@@ -136,7 +136,7 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run esbuild-base -- --minify && npm run copy-static",
-        "esbuild-base": "esbuild ./src/extension.ts ./src/test/**/*.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node --tsconfig=tsconfig.json",
+        "esbuild-base": "esbuild ./src/extension.ts ./src/test/**/*.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node",
         "esbuild": "npm run esbuild-base -- --sourcemap && npm run copy-static",
         "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
         "lint": "eslint src --ext ts",
