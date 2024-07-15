@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import { ExtensionName, ExtensionPublisher } from '../constants';
 
-const getExtension = () => {
+function getExtension() {
     return vscode.extensions.getExtension(`${ExtensionPublisher}.${ExtensionName}`);
 };
 
-const getExtensionVersion = (): string => {
+function getExtensionVersion(): string {
     const extension = getExtension();
 
     const version: string = extension?.packageJSON.version;

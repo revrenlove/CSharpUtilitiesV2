@@ -3,10 +3,9 @@ import * as vscode from 'vscode';
 import { CrashReportModalMessageItem } from './crashReportModalMessageItem';
 import { GithubIssuePayload } from './githubIssuePayload';
 import { getExtensionVersion } from "../utilities/extensionOperations";
+import { NewGithubIssueUrl } from "../constants";
 
-const newGithubIssueUrl = 'https://github.com/revrenlove/CSharpUtilitiesV2/issues/new';
-
-const errorCallback = async (e: Error): Promise<void> => {
+async function errorCallback(e: Error): Promise<void> {
 
     const errorMessageResult = await showCrashReportModal();
 
@@ -21,9 +20,10 @@ const errorCallback = async (e: Error): Promise<void> => {
     };
 
     const queryString = new URLSearchParams(Object.entries(payload)).toString();
+    const populatedNewIssueUri = vscode.Uri.parse(`${NewGithubIssueUrl}?${queryString}`);
 
-    vscode.env.openExternal(vscode.Uri.parse(`${newGithubIssueUrl}?${queryString}`));
-};
+    vscode.env.openExternal(populatedNewIssueUri);
+}
 
 const showCrashReportModal = async (): Promise<boolean> => {
     const messageItems: CrashReportModalMessageItem[] = [

@@ -1,8 +1,9 @@
 import { capitalizeFirstLetter } from "./stringOperations";
-import { readFile, writeFile } from "./fileOperations";
+import { getParentDirectoryPath, readFile, writeFile } from "./fileOperations";
 
 export {
     capitalizeFirstLetter,
     readFile,
-    writeFile
+    writeFile,
+    getParentDirectoryPath,
 };
