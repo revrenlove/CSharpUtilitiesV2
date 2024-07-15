@@ -6,3 +6,4 @@ export const TemplatePaths = {
 // TODO: JE - Change these!!!
 export const ExtensionPublisher = 'revrenlove2';
 export const ExtensionName = 'c-sharp-utilities2';
+export const NewGithubIssueUrl = 'https://github.com/revrenlove/CSharpUtilitiesV2/issues/new';

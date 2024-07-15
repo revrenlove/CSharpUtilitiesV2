@@ -1,46 +1,71 @@
 import * as vscode from 'vscode';
+import { EOL } from 'node:os';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+
 import { DotnetCommand } from '../models/dotnetCommand';
-import { getParentDirectoryPath } from './fileOperations';
+import { CSharpUtilitiesExtensionError } from '../error/cSharpUtilitiesExtensionError';
+import { getParentDirectoryPath } from '.';
 
 const execAsync = promisify(exec);
 
-type ExecResult = {
-    stdout: string;
-    stderr: string;
-};
-
 async function addProjectReferences(
-    rootProjectUri: vscode.Uri,
-    addedProjectUris: vscode.Uri[]): Promise<ExecResult> {
+    targetProjectUri: vscode.Uri,
+    addedProjectUris: vscode.Uri[]): Promise<string> {
 
-    const directoryPath = getParentDirectoryPath(rootProjectUri);
+    const directoryPath = getParentDirectoryPath(targetProjectUri);
     const command = DotnetCommand.AddProjectReference;
     const projectPaths = addedProjectUris.map(u => u.fsPath);
 
-    const commandResult = executeDotnetCommand(directoryPath, command, ...projectPaths);
+    const commandResult = await executeDotnetCommand(directoryPath, command, ...projectPaths);
 
     return commandResult;
 }
 
 async function removeProjectReferences(
-    rootProjectUri: vscode.Uri,
-    removedProjectUris: vscode.Uri[]): Promise<ExecResult> {
+    targetProjectUri: vscode.Uri,
+    removedProjectUris: vscode.Uri[]): Promise<string> {
 
-    const directoryPath = getParentDirectoryPath(rootProjectUri);
+    const directoryPath = getParentDirectoryPath(targetProjectUri);
     const command = DotnetCommand.RemoveProjectReference;
     const projectPaths = removedProjectUris.map(u => u.fsPath);
 
-    const commandResult = executeDotnetCommand(directoryPath, command, ...projectPaths);
+    const commandResult = await executeDotnetCommand(directoryPath, command, ...projectPaths);
 
     return commandResult;
+}
+
+async function listProjectReferences(targetProjectUri: vscode.Uri): Promise<vscode.Uri[]> {
+
+    const directoryPath = getParentDirectoryPath(targetProjectUri);
+    const command = DotnetCommand.ListProjectReferences;
+
+    // BUG: JE - I think it's breaking on this because `dotnet` isn't installed maybe?
+    const commandResult = await executeDotnetCommand(directoryPath, command);
+
+    // const stdout = handleExecResult(commandResult);
+
+    const outputLines = commandResult.split(EOL);
+
+    // TODO: JE - Remove console logs...
+    console.log(outputLines);
+
+    // EXPECTED POTENTIAL OUTPUT FROM RUNNING THE COMMAND:
+
+    // There are no Project to Project references in project C:\Users\elrod\src\RxTracker\RevrenLove.RxTracker.Models\.
+
+    // Project reference(s)
+    // --------------------
+    // ..\RevrenLove.RxTracker.Models\RevrenLove.RxTracker.Models.csproj
+    // ..\RevrenLove.RxTracker.Persistence\RevrenLove.RxTracker.Persistence.csproj        
+    // ..\RevrenLove.RxTracker.Services\RevrenLove.RxTracker.Services.csproj
+    return [];
 }
 
 async function executeDotnetCommand(
     directoryPath: string,
     dotnetCommand: DotnetCommand,
-    ...commandArgs: string[]): Promise<ExecResult> {
+    ...commandArgs: string[]): Promise<string> {
 
     let command = `dotnet ${dotnetCommand}`;
 
@@ -48,7 +73,13 @@ async function executeDotnetCommand(
         command += ` ${commandArgs.join(' ')}`;
     }
 
-    return await execAsync(command, { "cwd": directoryPath });
+    const execResult = await execAsync(command, { "cwd": directoryPath });
+
+    if (execResult.stderr) {
+        throw new CSharpUtilitiesExtensionError(execResult.stderr);
+    }
+
+    return execResult.stdout;
 }
 
-export { executeDotnetCommand, addProjectReferences, removeProjectReferences, ExecResult };
+export { addProjectReferences, removeProjectReferences, listProjectReferences };

@@ -1,113 +1,57 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { XMLParser } from 'fast-xml-parser';
-import { CSharpProject } from '../models/cSharpProject';
+import { parseStringPromise } from 'xml2js';
+
 import * as util from '../utilities';
+import { CSharpProject } from '../models/cSharpProject';
+import { document } from '../models/msbuild';
+import { listProjectReferences } from '../utilities/dotnetShellOperations';
 
-type KeyedString = { [k: string]: string; };
-type KeyValuePair = { [k: string]: any };
-type JsonNode = KeyValuePair[] | KeyValuePair | undefined;
+async function cSharpProjectFactory(csprojUri: vscode.Uri): Promise<CSharpProject> {
 
-const xmlParser = new XMLParser({ ignoreAttributes: false });
-
-async function cSharpProjectFactory(uri: vscode.Uri): Promise<CSharpProject> {
-
-    const projectName = path.parse(uri.fsPath).name;
-    const fileContents = await util.readFile(uri);
-    const projectJson = xmlParser.parse(fileContents);
-    const rootNamespace = getRootNamespace(projectJson) ?? projectName;
-    const projectReferencePaths = getReferencePaths(projectJson, "ProjectReference", uri.fsPath);
+    const projectName = path.parse(csprojUri.fsPath).name;
+    const rootNamespace = await getRootNamespace(csprojUri) ?? projectName;
+    const projectReferenceUris = await listProjectReferences(csprojUri);
 
     const cSharpProject: CSharpProject = {
         name: projectName,
-        uri: uri,
+        uri: csprojUri,
         rootNamespace: rootNamespace,
-        projectReferenceUris: projectReferencePaths.map(p => vscode.Uri.file(p))
+        projectReferenceUris: projectReferenceUris
     };
 
     return cSharpProject;
 }
 
-function getRootNamespace(json: any): string | undefined {
-    const propertyGroupNode: JsonNode = json?.Project?.PropertyGroup;
+// TODO: JE - This needs tests...
+async function getRootNamespace(csprojUri: vscode.Uri): Promise<string | undefined> {
 
-    if (!propertyGroupNode) {
+    const xml = await util.readFile(csprojUri);
+
+    const csprojDocument = await parseStringPromise(xml) as document;
+
+    const propertyGroups = csprojDocument.Project.PropertyGroup;
+
+    if (!propertyGroups) {
         return;
     }
 
-    let namespace: string | undefined;
+    const propertyGroup = propertyGroups.find(p => p.Property && p.Property.some(property => property.RootNamespace));
 
-    if (!Array.isArray(propertyGroupNode)) {
-
-        namespace = propertyGroupNode.RootNamespace;
-
-        return namespace;
+    if (!propertyGroup) {
+        return;
     }
 
-    for (let i = 0; i < propertyGroupNode.length; i++) {
+    const propertyProxy = propertyGroup.Property!.find(p => p.RootNamespace)!;
 
-        if (!propertyGroupNode[i].RootNamespace) {
-            continue;
-        }
+    const rootNamespace = propertyProxy.RootNamespace!.content;
 
-        if (!namespace) {
-            namespace = propertyGroupNode[i].RootNamespace;
-            continue;
-        }
-
-        if (namespace !== propertyGroupNode[i].RootNamespace) {
-            namespace = undefined;
-        }
-    }
-
-    return namespace;
+    return rootNamespace;
 }
 
-function getReferencePaths(json: any, elementName: string, projectPath: string): string[] {
-
-    const XML_ATTRIBUTE_KEY = '@_Include';
-
-    let projectReferencePaths: string[] = [];
-
-    let itemGroupNode: JsonNode = json?.Project?.ItemGroup;
-
-    if (!itemGroupNode) { return projectReferencePaths; }
-
-    if (!Array.isArray(itemGroupNode)) {
-        itemGroupNode = [itemGroupNode];
-    }
-
-    itemGroupNode = itemGroupNode.find((p: KeyValuePair) => p[elementName]);
-
-    if (!itemGroupNode) { return projectReferencePaths; }
-
-    const singleItemGroupNode: KeyValuePair = itemGroupNode;
-
-    if (Array.isArray(singleItemGroupNode[elementName])) {
-        projectReferencePaths = singleItemGroupNode[elementName].map((n: KeyedString) => n[XML_ATTRIBUTE_KEY]);
-    }
-    else {
-        projectReferencePaths = [singleItemGroupNode[elementName][XML_ATTRIBUTE_KEY]];
-    }
-
-    const absoluteProjectPaths =
-        projectReferencePaths
-            .map(x => relativePathToAbsolutePath(x, projectPath));
-
-    return absoluteProjectPaths;
-}
-
-function relativePathToAbsolutePath(relativePath: string, projectPath: string): string {
-
-    // dotnet project references use windows-style slashes.
-    // This normalizes to the platform.
-    relativePath = relativePath.replace(/\\/g, path.sep);
-
-    const projectDirectoryPath = path.dirname(projectPath);
-
-    const absolutePath = path.resolve(projectDirectoryPath, relativePath);
-
-    return absolutePath;
-}
-
+// TODO: JE - Figure out how we want to export methods for testing...
 export { cSharpProjectFactory };
+
+// export default cSharpProjectFactory;
+// const testableFunctions = { getProjectReferenceUris, relativePathToAbsolutePath };
+// export { testableFunctions as cSharpProjectFactoryInternalFunctions };

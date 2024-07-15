@@ -8,7 +8,6 @@ import { CircularReferenceError } from '../../error/circularReferenceError';
 import { cSharpProjectFactory } from '../../factories/cSharpProjectFactory';
 import { buildProjectReferenceTree } from '.';
 import * as dotnetShellOperations from '../../utilities/dotnetShellOperations';
-import { CSharpUtilitiesExtensionError } from '../../error/cSharpUtilitiesExtensionError';
 
 async function manageProjectReferences(contextualProjectUri: vscode.Uri): Promise<void> {
 
@@ -173,13 +172,13 @@ async function removeProjectReferences(rootProjectUri: vscode.Uri, removedProjec
         title: "Removing Projects...",
     };
 
-    const removeProjectReferencesCallback = async (): Promise<dotnetShellOperations.ExecResult> => {
+    const removeProjectReferencesCallback = async (): Promise<string> => {
         return await dotnetShellOperations.removeProjectReferences(rootProjectUri, removedProjectUris);
     };
 
     const result = await vscode.window.withProgress(progressOptions, removeProjectReferencesCallback);
 
-    handleExecResult(result);
+    vscode.window.showInformationMessage(result);
 }
 
 async function addProjectReferences(rootProjectUri: vscode.Uri, addedProjectUris: vscode.Uri[]): Promise<void> {
@@ -189,23 +188,13 @@ async function addProjectReferences(rootProjectUri: vscode.Uri, addedProjectUris
         title: "Adding Projects...",
     };
 
-    const addProjectReferencesCallback = async (): Promise<dotnetShellOperations.ExecResult> => {
+    const addProjectReferencesCallback = async (): Promise<string> => {
         return await dotnetShellOperations.addProjectReferences(rootProjectUri, addedProjectUris);
     };
 
     const result = await vscode.window.withProgress(progressOptions, addProjectReferencesCallback);
 
-    handleExecResult(result);
-}
-
-function handleExecResult(result: dotnetShellOperations.ExecResult) {
-
-    if (result.stderr) {
-        // TODO: Figure out _exactly_ what to do...
-        throw new CSharpUtilitiesExtensionError(result.stderr);
-    }
-
-    vscode.window.showInformationMessage(result.stdout);
+    vscode.window.showInformationMessage(result);
 }
 
 export { manageProjectReferences };
