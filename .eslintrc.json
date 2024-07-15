@@ -21,5 +21,5 @@
         "semi": "off",
         "eol-last": "error"
     },
-    "ignorePatterns": ["out", "dist", "**/*.d.ts"]
+    "ignorePatterns": ["out", "**/*.d.ts"]
 }
