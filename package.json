@@ -147,7 +147,8 @@
         "test": "vscode-test",
         "clean": "npm run clean-node-modules && npm run clean-out",
         "clean-node-modules": "rm -rf node_modules && npm i",
-        "clean-out": "rm -rf out && npm run esbuild"
+        "clean-out": "rm -rf out && npm run esbuild",
+        "lint": "eslint ."
     },
     "devDependencies": {
         "@eslint/js": "^9.7.0",
