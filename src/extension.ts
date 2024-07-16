@@ -5,5 +5,3 @@ import { commands } from './commands';
 export function activate(context: vscode.ExtensionContext) {
     registerCommands(context, commands);
 }
-
-export function deactivate() { }

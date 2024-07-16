@@ -9,7 +9,7 @@ suite('Util Test Suite', () => {
         const x = capitalizeFirstLetter("hi");
         assert.strictEqual(x, "Hi");
 
-        const y = vscode.window.activeColorTheme;
-        vscode.window.showInformationMessage("SS");
+        // const y = vscode.window.activeColorTheme;
+        void vscode.window.showInformationMessage("SS");
     });
 });

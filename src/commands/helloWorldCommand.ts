@@ -33,6 +33,6 @@ export class HelloWorldCommand extends CommandBase {
             return await myFunction();
         });
 
-        vscode.window.showInformationMessage(result);
+        void vscode.window.showInformationMessage(result);
     }
 }

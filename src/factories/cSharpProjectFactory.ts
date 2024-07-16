@@ -36,15 +36,19 @@ async function getRootNamespace(csprojUri: vscode.Uri): Promise<string | undefin
         return;
     }
 
-    const propertyGroup = propertyGroups.find(p => p.Property && p.Property.some(property => property.RootNamespace));
+    const propertyGroup = propertyGroups.find(p => p.Property?.some(property => property.RootNamespace));
 
     if (!propertyGroup) {
         return;
     }
 
-    const propertyProxy = propertyGroup.Property!.find(p => p.RootNamespace)!;
+    const propertyProxy = propertyGroup.Property?.find(p => p.RootNamespace);
 
-    const rootNamespace = propertyProxy.RootNamespace!.content;
+    if (!propertyProxy){
+        return;
+    }
+
+    const rootNamespace = propertyProxy.RootNamespace?.content;
 
     return rootNamespace;
 }

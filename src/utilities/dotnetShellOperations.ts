@@ -69,7 +69,7 @@ async function executeDotnetCommand(
 
     let command = `dotnet ${dotnetCommand}`;
 
-    if (commandArgs && commandArgs.length > 0) {
+    if (commandArgs.length > 0) {
         command += ` ${commandArgs.join(' ')}`;
     }
 

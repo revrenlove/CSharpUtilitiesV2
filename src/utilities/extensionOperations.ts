@@ -8,6 +8,7 @@ function getExtension() {
 function getExtensionVersion(): string {
     const extension = getExtension();
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const version: string = extension?.packageJSON.version;
 
     return version;

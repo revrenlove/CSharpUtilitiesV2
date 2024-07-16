@@ -43,7 +43,7 @@ async function showProjectReferenceQuickPick(contextualProject: CSharpProject): 
 
     if (availableProjectUris.length === 0) {
 
-        vscode.window.showInformationMessage('No other projects found in workspace.');
+        void vscode.window.showInformationMessage('No other projects found in workspace.');
 
         return;
     }
@@ -90,7 +90,7 @@ function getQuickPickItems(selectedUris: vscode.Uri[], availableProjectUris: vsc
     return quickPickItems;
 }
 
-function uriToQuickPick(uri: vscode.Uri, picked: boolean = false): CsprojFileQuickPickItem {
+function uriToQuickPick(uri: vscode.Uri, picked = false): CsprojFileQuickPickItem {
 
     const label = path.parse(uri.fsPath).name;
 
@@ -133,7 +133,7 @@ async function isValidReferenceTree(cSharpProject: CSharpProject, selectedProjec
 
     tempCSharpProject.projectReferenceUris = selectedProjectUris;
 
-    let projectRootTreeNode = new TreeNode(tempCSharpProject);
+    const projectRootTreeNode = new TreeNode(tempCSharpProject);
 
     try {
         await buildProjectReferenceTree(projectRootTreeNode);
@@ -143,7 +143,7 @@ async function isValidReferenceTree(cSharpProject: CSharpProject, selectedProjec
             throw e;
         }
 
-        vscode.window.showErrorMessage(e.message);
+        void vscode.window.showErrorMessage(e.message);
 
         return false;
     }
@@ -178,7 +178,7 @@ async function removeProjectReferences(rootProjectUri: vscode.Uri, removedProjec
 
     const result = await vscode.window.withProgress(progressOptions, removeProjectReferencesCallback);
 
-    vscode.window.showInformationMessage(result);
+    void vscode.window.showInformationMessage(result);
 }
 
 async function addProjectReferences(rootProjectUri: vscode.Uri, addedProjectUris: vscode.Uri[]): Promise<void> {
@@ -194,7 +194,7 @@ async function addProjectReferences(rootProjectUri: vscode.Uri, addedProjectUris
 
     const result = await vscode.window.withProgress(progressOptions, addProjectReferencesCallback);
 
-    vscode.window.showInformationMessage(result);
+    void vscode.window.showInformationMessage(result);
 }
 
 export { manageProjectReferences };

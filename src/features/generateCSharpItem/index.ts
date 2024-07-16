@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import { ItemFileTemplate } from "./itemFileTemplate";
 import { TemplateType } from "./templateType";
 import { cSharpProjectFactory } from "../../factories/cSharpProjectFactory";
-import ExtensionUserSettings from "../../extensionUserSettings";
+import * as extensionUserSettings from '../../extensionUserSettings';
 import * as util from '../../utilities';
 import { TemplatePaths } from "../../constants";
 
@@ -13,7 +13,7 @@ const csExtRgx = /\.cs$/;
 
 async function generateCSharpItem(templateType: TemplateType, contextualUri: vscode.Uri): Promise<void> {
 
-    let filename = await promptForFilename(templateType);
+    const filename = await promptForFilename(templateType);
 
     if (!filename) { return; }
 
@@ -57,7 +57,7 @@ async function promptForFilename(templateType: TemplateType): Promise<string | u
         return;
     }
 
-    if (!/\.cs$/.test(filename)) {
+    if (!filename.endsWith(".cs")) {
         filename += '.cs';
     }
 
@@ -146,7 +146,7 @@ async function getProjectFileUri(directoryUri: vscode.Uri): Promise<vscode.Uri> 
         return result;
     });
 
-    const projectFileResult = readDirectoryResults.find(r => /\.csproj$/.test(r.name));
+    const projectFileResult = readDirectoryResults.find(r => r.name.endsWith(".csproj"));
 
     if (projectFileResult) {
         projectFileUri = vscode.Uri.file(path.join(directoryUri.fsPath, projectFileResult.name));
@@ -168,11 +168,11 @@ async function getProjectFileUri(directoryUri: vscode.Uri): Promise<vscode.Uri> 
 }
 
 function generateUsingStatementsTemplateValue(): string {
-    if (ExtensionUserSettings.isImplicitUsings || ExtensionUserSettings.namespacesToInclude.length === 0) {
+    if (extensionUserSettings.isImplicitUsings() || extensionUserSettings.namespacesToInclude().length === 0) {
         return "";
     }
 
-    const usingStatements = ExtensionUserSettings.namespacesToInclude.map(namespace => `using ${namespace};`);
+    const usingStatements = extensionUserSettings.namespacesToInclude().map(namespace => `using ${namespace};`);
 
     const templateValue = `${usingStatements.join(EOL)}${EOL}${EOL}`;
 
@@ -189,7 +189,7 @@ async function populateTemplate(templateValues: ItemFileTemplate): Promise<strin
 
         const rgx = new RegExp(`%${placeholder}%`);
 
-        template = template.replace(rgx, value);
+        template = template.replace(rgx, value as string);
     }
 
     return template;
@@ -199,7 +199,7 @@ function getTemplatePath(): string {
 
     let templatePath = TemplatePaths.namespaceEncapsulated;
 
-    if (ExtensionUserSettings.isFileScopedNamespace) {
+    if (extensionUserSettings.isFileScopedNamespace()) {
         templatePath = TemplatePaths.fileScopedNamespace;
     }
 
