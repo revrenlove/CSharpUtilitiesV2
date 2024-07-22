@@ -164,7 +164,6 @@
         "copyfiles": "^2.4.1",
         "esbuild": "^0.20.2",
         "eslint": "^8.57.0",
-        "eslint-plugin-json": "^4.0.0",
         "typescript": "^5.5.3",
         "typescript-eslint": "^7.16.1"
     },

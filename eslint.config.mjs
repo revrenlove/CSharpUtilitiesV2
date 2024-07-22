@@ -28,9 +28,5 @@ export default tseslint.config(
     {
         files: ["**/*.mjs"],
         ...tseslint.configs.disableTypeChecked,
-    },
-    {
-        files: ["**/*.json"],
-        ...tseslint.configs.disableTypeChecked,
-    },
+    }
 )
