@@ -1,21 +1,24 @@
 import { EOL } from "node:os";
-import * as path from 'path';
-import * as vscode from 'vscode';
+import * as path from "path";
+import * as vscode from "vscode";
 import { ItemFileTemplate } from "./itemFileTemplate";
 import { TemplateType } from "./templateType";
 import { cSharpProjectFactory } from "../../factories/cSharpProjectFactory";
-import * as extensionUserSettings from '../../extensionUserSettings';
-import * as util from '../../utilities';
+import * as extensionUserSettings from "../../extensionUserSettings";
+import * as util from "../../utilities";
 import { TemplatePaths } from "../../constants";
 
 const filenameRegex = new RegExp(`\\${path.sep}[^\\${path.sep}]+$`);
 const csExtRgx = /\.cs$/;
 
+// TODO: #18 - JE - ADD STYLE RULE FOR MAX LINE LENGTH!!!
 async function generateCSharpItem(templateType: TemplateType, contextualUri: vscode.Uri): Promise<void> {
 
     const filename = await promptForFilename(templateType);
 
-    if (!filename) { return; }
+    if (!filename) {
+        return;
+    }
 
     const newFileUri = await getNewFileUri(filename, contextualUri);
 
@@ -28,7 +31,7 @@ async function generateCSharpItem(templateType: TemplateType, contextualUri: vsc
     const template: ItemFileTemplate = {
         namespace: namespace,
         objectType: TemplateType[templateType],
-        objectName: filename.replace(csExtRgx, ''),
+        objectName: filename.replace(csExtRgx, ""),
         usings: generateUsingStatementsTemplateValue(),
     };
 
@@ -50,7 +53,7 @@ async function promptForFilename(templateType: TemplateType): Promise<string | u
 
     let filename = await vscode.window.showInputBox({
         "prompt": `Please enter the name of the new ${templateTypeName}...`,
-        "placeHolder": placeHolder
+        "placeHolder": placeHolder,
     });
 
     if (!filename) {
@@ -58,7 +61,7 @@ async function promptForFilename(templateType: TemplateType): Promise<string | u
     }
 
     if (!filename.endsWith(".cs")) {
-        filename += '.cs';
+        filename += ".cs";
     }
 
     return filename;
@@ -75,7 +78,7 @@ async function getNewFileUri(filename: string, contextualUri: vscode.Uri): Promi
         newFileDirectoryPath = contextualUri.fsPath;
     }
     else {
-        newFileDirectoryPath = contextualUri.fsPath.replace(filenameRegex, '');
+        newFileDirectoryPath = contextualUri.fsPath.replace(filenameRegex, "");
     }
 
     const newFilePath = path.join(newFileDirectoryPath, filename);
@@ -85,21 +88,24 @@ async function getNewFileUri(filename: string, contextualUri: vscode.Uri): Promi
 }
 
 async function fileExists(uri: vscode.Uri): Promise<boolean> {
+
     try {
         await vscode.workspace.fs.stat(uri);
-        return true; // File exists
-    } catch (error) {
-        if (error instanceof Error && error.message.includes('ENOENT')) {
-            return false; // File does not exist
-        } else {
-            throw error; // Re-throwing the error for the caller to handle
+        return true;
+    }
+    catch (error) {
+        if (error instanceof Error && error.message.includes("ENOENT")) {
+            return false;
+        }
+        else {
+            throw error;
         }
     }
 }
 
 async function getFullNamespace(newFileUri: vscode.Uri): Promise<string> {
 
-    const directoryPath = newFileUri.fsPath.replace(filenameRegex, '');
+    const directoryPath = newFileUri.fsPath.replace(filenameRegex, "");
     const directoryUri = vscode.Uri.file(directoryPath);
 
     const projectFileUri = await getProjectFileUri(directoryUri);
@@ -112,14 +118,14 @@ async function getFullNamespace(newFileUri: vscode.Uri): Promise<string> {
 
     if (directoryPath !== projectFileDirectoryPath) {
 
-        const escapedSeparator = path.sep.replace(/\\/g, '\\\\');
+        const escapedSeparator = path.sep.replace(/\\/g, "\\\\");
 
-        const pathRegex = new RegExp(escapedSeparator, 'g');
+        const pathRegex = new RegExp(escapedSeparator, "g");
 
         const subNamespace =
             directoryPath
-                .replace(projectFileDirectoryPath, '')
-                .replace(pathRegex, '.');
+                .replace(projectFileDirectoryPath, "")
+                .replace(pathRegex, ".");
 
         namespace += subNamespace;
     }
@@ -160,7 +166,7 @@ async function getProjectFileUri(directoryUri: vscode.Uri): Promise<vscode.Uri> 
         throw new Error("You can only add an item in a C# project folder.");
     }
 
-    const parentDirectoryUri = vscode.Uri.joinPath(directoryUri, '..');
+    const parentDirectoryUri = vscode.Uri.joinPath(directoryUri, "..");
 
     projectFileUri = await getProjectFileUri(parentDirectoryUri);
 

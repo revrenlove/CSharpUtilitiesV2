@@ -1,11 +1,11 @@
-import * as vscode from 'vscode';
-import * as path from 'path';
-import { parseStringPromise } from 'xml2js';
+import * as vscode from "vscode";
+import * as path from "path";
+import { parseStringPromise } from "xml2js";
 
-import * as util from '../utilities';
-import { CSharpProject } from '../models/cSharpProject';
-import { document } from '../models/msbuild';
-import { listProjectReferences } from '../utilities/dotnetShellOperations';
+import * as util from "../utilities";
+import { CSharpProject } from "../models/cSharpProject";
+import { document } from "../models/msbuild";
+import { listProjectReferences } from "../utilities/dotnetShellOperations";
 
 async function cSharpProjectFactory(csprojUri: vscode.Uri): Promise<CSharpProject> {
 
@@ -17,7 +17,7 @@ async function cSharpProjectFactory(csprojUri: vscode.Uri): Promise<CSharpProjec
         name: projectName,
         uri: csprojUri,
         rootNamespace: rootNamespace,
-        projectReferenceUris: projectReferenceUris
+        projectReferenceUris: projectReferenceUris,
     };
 
     return cSharpProject;
@@ -44,7 +44,7 @@ async function getRootNamespace(csprojUri: vscode.Uri): Promise<string | undefin
 
     const propertyProxy = propertyGroup.Property?.find(p => p.RootNamespace);
 
-    if (!propertyProxy){
+    if (!propertyProxy) {
         return;
     }
 

@@ -1,8 +1,9 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 export class ReferenceChangeResult {
 
     projectUrisToAdd: vscode.Uri[];
+
     projectUrisToRemove: vscode.Uri[];
 
     constructor(projectUrisToAdd: vscode.Uri[], projectUrisToRemove: vscode.Uri[]) {

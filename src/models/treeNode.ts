@@ -1,10 +1,13 @@
-import { createHash } from 'crypto';
+import { createHash } from "crypto";
 
 export class TreeNode<T> {
 
     private readonly valueHash: string;
+
     public readonly value: NonNullable<T>;
+
     public readonly children: TreeNode<T>[];
+
     public readonly parent: TreeNode<T> | undefined;
 
     constructor(value: NonNullable<T>, parent?: TreeNode<T>) {
@@ -14,9 +17,9 @@ export class TreeNode<T> {
         this.children = [];
 
         this.valueHash =
-            createHash('md5')
+            createHash("md5")
                 .update(JSON.stringify(this.value))
-                .digest('hex');
+                .digest("hex");
     }
 
     public isCircular(): boolean {

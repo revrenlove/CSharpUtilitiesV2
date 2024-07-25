@@ -10,7 +10,7 @@ const addItemCommands: EasyVsCodeCommand[] = [
     AddEnumCommand,
     AddInterfaceCommand,
     AddRecordCommand,
-    AddStructCommand
+    AddStructCommand,
 ];
 
 export { addItemCommands };
