@@ -1,13 +1,13 @@
-import * as vscode from 'vscode';
-import * as path from 'path';
-import { CsprojFileQuickPickItem } from '../../models/csprojFileQuickPickItem';
-import { CSharpProject } from '../../models/cSharpProject';
-import { ReferenceChangeResult } from '../../models/referenceChangeResult';
-import { TreeNode } from '../../models/treeNode';
-import { CircularReferenceError } from '../../error/circularReferenceError';
-import { cSharpProjectFactory } from '../../factories/cSharpProjectFactory';
-import { buildProjectReferenceTree } from '.';
-import * as dotnetShellOperations from '../../utilities/dotnetShellOperations';
+import * as vscode from "vscode";
+import * as path from "path";
+import { CsprojFileQuickPickItem } from "../../models/csprojFileQuickPickItem";
+import { CSharpProject } from "../../models/cSharpProject";
+import { ReferenceChangeResult } from "../../models/referenceChangeResult";
+import { TreeNode } from "../../models/treeNode";
+import { CircularReferenceError } from "../../error/circularReferenceError";
+import { cSharpProjectFactory } from "../../factories/cSharpProjectFactory";
+import { buildProjectReferenceTree } from ".";
+import * as dotnetShellOperations from "../../utilities/dotnetShellOperations";
 
 async function manageProjectReferences(contextualProjectUri: vscode.Uri): Promise<void> {
 
@@ -28,7 +28,7 @@ async function manageProjectReferences(contextualProjectUri: vscode.Uri): Promis
         return;
     }
 
-    // The dotnet CLI _will_ allow you to add circular references, so this 
+    // The dotnet CLI _will_ allow you to add circular references, so this
     //  preemptively checks for that.
     if (!await isValidReferenceTree(contextualProject, selectedProjectUris)) {
         return;
@@ -43,7 +43,7 @@ async function showProjectReferenceQuickPick(contextualProject: CSharpProject): 
 
     if (availableProjectUris.length === 0) {
 
-        vscode.window.showInformationMessage('No other projects found in workspace.');
+        void vscode.window.showInformationMessage("No other projects found in workspace.");
 
         return;
     }
@@ -53,7 +53,7 @@ async function showProjectReferenceQuickPick(contextualProject: CSharpProject): 
     const quickPickOptions: vscode.QuickPickOptions & { canPickMany: true } = {
         canPickMany: true,
         matchOnDetail: true,
-        placeHolder: 'Search for project...'
+        placeHolder: "Search for project...",
     };
 
     const selectedProjects = await vscode.window.showQuickPick<CsprojFileQuickPickItem>(quickPickItems, quickPickOptions);
@@ -63,7 +63,7 @@ async function showProjectReferenceQuickPick(contextualProject: CSharpProject): 
 
 async function getAllProjectUrisInWorkspace(...urisToFilter: vscode.Uri[]): Promise<vscode.Uri[]> {
 
-    const workspaceProjectUris = await vscode.workspace.findFiles('**/*.csproj');
+    const workspaceProjectUris = await vscode.workspace.findFiles("**/*.csproj");
 
     urisToFilter.forEach(uri => {
         const indexToRemove = workspaceProjectUris.findIndex(u => u.fsPath === uri.fsPath);
@@ -90,7 +90,7 @@ function getQuickPickItems(selectedUris: vscode.Uri[], availableProjectUris: vsc
     return quickPickItems;
 }
 
-function uriToQuickPick(uri: vscode.Uri, picked: boolean = false): CsprojFileQuickPickItem {
+function uriToQuickPick(uri: vscode.Uri, picked = false): CsprojFileQuickPickItem {
 
     const label = path.parse(uri.fsPath).name;
 
@@ -99,7 +99,7 @@ function uriToQuickPick(uri: vscode.Uri, picked: boolean = false): CsprojFileQui
         detail: uri.fsPath,
         picked: picked,
         alwaysShow: true,
-        uri: uri
+        uri: uri,
     };
 
     return quickPickItem;
@@ -116,7 +116,7 @@ function getReferenceChangeResult(initialUris: vscode.Uri[], finalUris: vscode.U
     return referenceChangeResult;
 }
 
-// TODO: JE - This seems to be inconsistent... If A references B and then B tries to reference A, it appears to allow it??? Maybe?
+// BUG: JE - This seems to be inconsistent... If A references B and then B tries to reference A, it appears to allow it??? Maybe?
 // TODO: JE - We need to figure out a unit test around this shit...
 async function isValidReferenceTree(cSharpProject: CSharpProject, selectedProjectUris: vscode.Uri[]): Promise<boolean> {
 
@@ -128,12 +128,12 @@ async function isValidReferenceTree(cSharpProject: CSharpProject, selectedProjec
         name: cSharpProject.name,
         uri: cSharpProject.uri,
         rootNamespace: cSharpProject.rootNamespace,
-        projectReferenceUris: selectedProjectUris
+        projectReferenceUris: selectedProjectUris,
     };
 
     tempCSharpProject.projectReferenceUris = selectedProjectUris;
 
-    let projectRootTreeNode = new TreeNode(tempCSharpProject);
+    const projectRootTreeNode = new TreeNode(tempCSharpProject);
 
     try {
         await buildProjectReferenceTree(projectRootTreeNode);
@@ -143,7 +143,7 @@ async function isValidReferenceTree(cSharpProject: CSharpProject, selectedProjec
             throw e;
         }
 
-        vscode.window.showErrorMessage(e.message);
+        void vscode.window.showErrorMessage(e.message);
 
         return false;
     }
@@ -178,7 +178,7 @@ async function removeProjectReferences(rootProjectUri: vscode.Uri, removedProjec
 
     const result = await vscode.window.withProgress(progressOptions, removeProjectReferencesCallback);
 
-    vscode.window.showInformationMessage(result);
+    void vscode.window.showInformationMessage(result);
 }
 
 async function addProjectReferences(rootProjectUri: vscode.Uri, addedProjectUris: vscode.Uri[]): Promise<void> {
@@ -194,7 +194,7 @@ async function addProjectReferences(rootProjectUri: vscode.Uri, addedProjectUris
 
     const result = await vscode.window.withProgress(progressOptions, addProjectReferencesCallback);
 
-    vscode.window.showInformationMessage(result);
+    void vscode.window.showInformationMessage(result);
 }
 
 export { manageProjectReferences };

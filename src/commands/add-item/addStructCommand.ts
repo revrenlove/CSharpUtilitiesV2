@@ -1,10 +1,10 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 import { CommandBase, commandId } from "@revrenlove/easy-vscode-commands";
-import { generateCSharpItem } from '../../features/generateCSharpItem';
-import { handleGracefully } from '../../decorators/handleGracefully';
-import { TemplateType } from '../../features/generateCSharpItem/templateType';
+import { generateCSharpItem } from "../../features/generateCSharpItem";
+import { handleGracefully } from "../../decorators/handleGracefully";
+import { TemplateType } from "../../features/generateCSharpItem/templateType";
 
-@commandId('c-sharp-utilities2.addStruct')
+@commandId("c-sharp-utilities2.addStruct")
 export class AddStructCommand extends CommandBase {
 
     @handleGracefully

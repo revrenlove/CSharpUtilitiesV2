@@ -1,12 +1,17 @@
-import { errorCallback } from '../error/errorCallback';
+import { CommandBase } from "@revrenlove/easy-vscode-commands";
+import { errorCallback } from "../error/errorCallback";
 
-function handleGracefully(_target: any, _propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+function handleGracefully(
+    _target: CommandBase,
+    _propertyKey: string,
+    descriptor: PropertyDescriptor,
+): PropertyDescriptor {
 
-    const originalMethod = descriptor.value;
+    const originalMethod = descriptor.value as (...args: unknown[]) => unknown;
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function(...args: unknown[]) {
         try {
-            const result = await originalMethod(...args);
+            const result: unknown = await originalMethod(...args);
             return result;
         }
         catch (e) {

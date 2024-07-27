@@ -1,9 +1,9 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 import { CommandBase, commandId } from "@revrenlove/easy-vscode-commands";
-import { handleGracefully } from '../decorators/handleGracefully';
+import { handleGracefully } from "../decorators/handleGracefully";
 
 async function wait(seconds: number): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         setTimeout(() => {
             resolve();
         }, seconds * 1000);
@@ -17,7 +17,7 @@ async function myFunction(): Promise<string> {
     return "Done";
 }
 
-@commandId('c-sharp-utilities2.helloWorld')
+@commandId("c-sharp-utilities2.helloWorld")
 export class HelloWorldCommand extends CommandBase {
 
     @handleGracefully
@@ -33,6 +33,6 @@ export class HelloWorldCommand extends CommandBase {
             return await myFunction();
         });
 
-        vscode.window.showInformationMessage(result);
+        void vscode.window.showInformationMessage(result);
     }
 }

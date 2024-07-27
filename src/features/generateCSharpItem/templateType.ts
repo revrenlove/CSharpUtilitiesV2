@@ -3,5 +3,5 @@ export enum TemplateType {
     interface,
     enum,
     struct,
-    record
+    record,
 }

@@ -1,17 +1,17 @@
-import * as vscode from 'vscode';
-import { EOL } from 'node:os';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-import { DotnetCommand } from '../models/dotnetCommand';
-import { CSharpUtilitiesExtensionError } from '../error/cSharpUtilitiesExtensionError';
-import { getParentDirectoryPath } from '.';
+import * as vscode from "vscode";
+import { EOL } from "node:os";
+import { exec } from "child_process";
+import { promisify } from "util";
+import { DotnetCommand } from "../models/dotnetCommand";
+import { CSharpUtilitiesExtensionError } from "../error/cSharpUtilitiesExtensionError";
+import { getParentDirectoryPath } from ".";
 
 const execAsync = promisify(exec);
 
 async function addProjectReferences(
     targetProjectUri: vscode.Uri,
-    addedProjectUris: vscode.Uri[]): Promise<string> {
+    addedProjectUris: vscode.Uri[],
+): Promise<string> {
 
     const directoryPath = getParentDirectoryPath(targetProjectUri);
     const command = DotnetCommand.AddProjectReference;
@@ -24,7 +24,8 @@ async function addProjectReferences(
 
 async function removeProjectReferences(
     targetProjectUri: vscode.Uri,
-    removedProjectUris: vscode.Uri[]): Promise<string> {
+    removedProjectUris: vscode.Uri[],
+): Promise<string> {
 
     const directoryPath = getParentDirectoryPath(targetProjectUri);
     const command = DotnetCommand.RemoveProjectReference;
@@ -57,7 +58,7 @@ async function listProjectReferences(targetProjectUri: vscode.Uri): Promise<vsco
     // Project reference(s)
     // --------------------
     // ..\RevrenLove.RxTracker.Models\RevrenLove.RxTracker.Models.csproj
-    // ..\RevrenLove.RxTracker.Persistence\RevrenLove.RxTracker.Persistence.csproj        
+    // ..\RevrenLove.RxTracker.Persistence\RevrenLove.RxTracker.Persistence.csproj
     // ..\RevrenLove.RxTracker.Services\RevrenLove.RxTracker.Services.csproj
     return [];
 }
@@ -65,12 +66,13 @@ async function listProjectReferences(targetProjectUri: vscode.Uri): Promise<vsco
 async function executeDotnetCommand(
     directoryPath: string,
     dotnetCommand: DotnetCommand,
-    ...commandArgs: string[]): Promise<string> {
+    ...commandArgs: string[]
+): Promise<string> {
 
     let command = `dotnet ${dotnetCommand}`;
 
-    if (commandArgs && commandArgs.length > 0) {
-        command += ` ${commandArgs.join(' ')}`;
+    if (commandArgs.length > 0) {
+        command += ` ${commandArgs.join(" ")}`;
     }
 
     const execResult = await execAsync(command, { "cwd": directoryPath });

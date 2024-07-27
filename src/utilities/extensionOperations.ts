@@ -1,16 +1,18 @@
-import * as vscode from 'vscode';
-import { ExtensionName, ExtensionPublisher } from '../constants';
+import * as vscode from "vscode";
+import { ExtensionName, ExtensionPublisher } from "../constants";
+import IPackageJson from "@ts-type/package-dts";
 
-function getExtension() {
-    return vscode.extensions.getExtension(`${ExtensionPublisher}.${ExtensionName}`);
-};
+function getExtensionVersion(): string | undefined {
 
-function getExtensionVersion(): string {
-    const extension = getExtension();
+    const extension = vscode.extensions.getExtension(`${ExtensionPublisher}.${ExtensionName}`);
 
-    const version: string = extension?.packageJSON.version;
+    if (!extension) {
+        return;
+    }
 
-    return version;
-};
+    const packageJson = extension.packageJSON as IPackageJson;
 
-export { getExtension, getExtensionVersion };
+    return packageJson.version;
+}
+
+export { getExtensionVersion };
