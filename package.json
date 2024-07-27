@@ -169,6 +169,7 @@
     },
     "dependencies": {
         "@revrenlove/easy-vscode-commands": "^1.0.3",
+        "@ts-type/package-dts": "^2.0.8",
         "xml2js": "^0.6.2"
     }
 }

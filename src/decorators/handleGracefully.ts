@@ -1,10 +1,10 @@
 import { CommandBase } from "@revrenlove/easy-vscode-commands";
 import { errorCallback } from "../error/errorCallback";
 
-// TODO: #18 - JE - Make this consistent... all on individual lines or all on one line
 function handleGracefully(
     _target: CommandBase,
-    _propertyKey: string, descriptor: PropertyDescriptor,
+    _propertyKey: string,
+    descriptor: PropertyDescriptor,
 ): PropertyDescriptor {
 
     const originalMethod = descriptor.value as (...args: unknown[]) => unknown;

@@ -1,18 +1,18 @@
 import * as vscode from "vscode";
 import { ExtensionName, ExtensionPublisher } from "../constants";
+import IPackageJson from "@ts-type/package-dts";
 
-function getExtension() {
-    return vscode.extensions.getExtension(`${ExtensionPublisher}.${ExtensionName}`);
+function getExtensionVersion(): string | undefined {
+
+    const extension = vscode.extensions.getExtension(`${ExtensionPublisher}.${ExtensionName}`);
+
+    if (!extension) {
+        return;
+    }
+
+    const packageJson = extension.packageJSON as IPackageJson;
+
+    return packageJson.version;
 }
 
-function getExtensionVersion(): string {
-    const extension = getExtension();
-
-    // TODO: #18 - JE - Rework this shit so we don't have to disable rules...
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const version: string = extension?.packageJSON.version;
-
-    return version;
-}
-
-export { getExtension, getExtensionVersion };
+export { getExtensionVersion };

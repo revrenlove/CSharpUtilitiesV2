@@ -20,12 +20,14 @@ async function errorCallback(e: Error): Promise<void> {
     };
 
     const queryString = new URLSearchParams(Object.entries(payload)).toString();
+
     const populatedNewIssueUri = vscode.Uri.parse(`${NewGithubIssueUrl}?${queryString}`);
 
     void vscode.env.openExternal(populatedNewIssueUri);
 }
 
-const showCrashReportModal = async (): Promise<boolean> => {
+async function showCrashReportModal(): Promise<boolean> {
+
     const messageItems: CrashReportModalMessageItem[] = [
         {
             title: "Yes",
@@ -47,15 +49,15 @@ const showCrashReportModal = async (): Promise<boolean> => {
     }
 
     return true;
-};
+}
 
-const formatIssueBody = (e: Error): string => {
+function formatIssueBody(e: Error): string {
 
     let body = "Please describe the steps that caused this error:\n\n";
 
     body += "=================================\n\n";
 
-    body += `Extension Version: ${getExtensionVersion()}\n`;
+    body += `Extension Version: ${getExtensionVersion() ?? "Not available"}\n`;
     body += `Platform: ${os.platform()}\n`;
     body += `Release: ${os.release()}\n`;
     body += `Version: ${os.version() ? os.version() : "Not available"}\n\n`;
@@ -69,6 +71,6 @@ const formatIssueBody = (e: Error): string => {
     body += `Stack Trace:\n${e.stack ? e.stack : ""}`;
 
     return body;
-};
+}
 
 export { errorCallback };

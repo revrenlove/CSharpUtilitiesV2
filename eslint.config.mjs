@@ -38,14 +38,18 @@ export default tseslint.config(
             "@stylistic/linebreak-style": "off",
             "@stylistic/multiline-comment-style": "off",
             "@stylistic/multiline-ternary": ["error", "always-multiline"],
+            "@stylistic/newline-per-chained-call": ["error", { "ignoreChainWithDepth": 2 }],
+            "@stylistic/no-multiple-empty-lines": ["error", { "max": 1 }],
+            "@stylistic/object-curly-newline": ["error", { "consistent": true }],
             "@stylistic/object-curly-spacing": ["error", "always"],
             "@stylistic/padded-blocks": "off",
             "@stylistic/quote-props": ["error", "consistent"],
-            // TODO: #18 - JE - figure out what rule is causing this...
             "@stylistic/space-before-function-paren": [
-                "error", { "anonymous": "never",
+                "error", {
+                    "anonymous": "never",
                     "named": "never",
-                    "asyncArrow": "always" },
+                    "asyncArrow": "always",
+                },
             ],
         },
     },

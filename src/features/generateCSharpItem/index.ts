@@ -4,14 +4,16 @@ import * as vscode from "vscode";
 import { ItemFileTemplate } from "./itemFileTemplate";
 import { TemplateType } from "./templateType";
 import { cSharpProjectFactory } from "../../factories/cSharpProjectFactory";
-import * as extensionUserSettings from "../../extensionUserSettings";
 import * as util from "../../utilities";
 import { TemplatePaths } from "../../constants";
+import { ReadDirectoryResult } from "../../models/readDirectoryResult";
+import ConfigurationManager from "../../configurationManager";
+
+const configurationManager = ConfigurationManager.getInstance();
 
 const filenameRegex = new RegExp(`\\${path.sep}[^\\${path.sep}]+$`);
 const csExtRgx = /\.cs$/;
 
-// TODO: #18 - JE - ADD STYLE RULE FOR MAX LINE LENGTH!!!
 async function generateCSharpItem(templateType: TemplateType, contextualUri: vscode.Uri): Promise<void> {
 
     const filename = await promptForFilename(templateType);
@@ -87,6 +89,8 @@ async function getNewFileUri(filename: string, contextualUri: vscode.Uri): Promi
     return newFileUri;
 }
 
+// I know it's bad form to use try/catch for flow control...
+//   but this is literally the only way to do this. :(
 async function fileExists(uri: vscode.Uri): Promise<boolean> {
 
     try {
@@ -97,9 +101,8 @@ async function fileExists(uri: vscode.Uri): Promise<boolean> {
         if (error instanceof Error && error.message.includes("ENOENT")) {
             return false;
         }
-        else {
-            throw error;
-        }
+
+        throw error;
     }
 }
 
@@ -132,11 +135,6 @@ async function getFullNamespace(newFileUri: vscode.Uri): Promise<string> {
 
     return namespace;
 
-}
-
-interface ReadDirectoryResult {
-    name: string;
-    fileType: vscode.FileType;
 }
 
 async function getProjectFileUri(directoryUri: vscode.Uri): Promise<vscode.Uri> {
@@ -174,11 +172,14 @@ async function getProjectFileUri(directoryUri: vscode.Uri): Promise<vscode.Uri> 
 }
 
 function generateUsingStatementsTemplateValue(): string {
-    if (extensionUserSettings.isImplicitUsings() || extensionUserSettings.namespacesToInclude().length === 0) {
+
+    const includedNamespaces = configurationManager.namespacesToInclude;
+
+    if (configurationManager.isImplicitUsings || includedNamespaces.length === 0) {
         return "";
     }
 
-    const usingStatements = extensionUserSettings.namespacesToInclude().map(namespace => `using ${namespace};`);
+    const usingStatements = includedNamespaces.map(namespace => `using ${namespace};`);
 
     const templateValue = `${usingStatements.join(EOL)}${EOL}${EOL}`;
 
@@ -205,7 +206,7 @@ function getTemplatePath(): string {
 
     let templatePath = TemplatePaths.namespaceEncapsulated;
 
-    if (extensionUserSettings.isFileScopedNamespace()) {
+    if (configurationManager.isFileScopedNamespace) {
         templatePath = TemplatePaths.fileScopedNamespace;
     }
 
@@ -229,7 +230,9 @@ function getCursorPosition(document: vscode.TextDocument): vscode.Position {
     let cursorColumnNumber = 0;
 
     for (let lineNumber = 0; lineNumber < document.lineCount; lineNumber++) {
+
         const line = document.lineAt(lineNumber);
+
         if (line.text.includes("}")) {
             cursorLineNumber = lineNumber - 1;
             break;

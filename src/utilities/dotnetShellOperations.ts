@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import { EOL } from "node:os";
 import { exec } from "child_process";
 import { promisify } from "util";
-
 import { DotnetCommand } from "../models/dotnetCommand";
 import { CSharpUtilitiesExtensionError } from "../error/cSharpUtilitiesExtensionError";
 import { getParentDirectoryPath } from ".";
