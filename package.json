@@ -1,175 +1,178 @@
 {
-    "name": "c-sharp-utilities2",
-    "displayName": "C# Utilities",
-    "description": "",
-    "version": "3.0.10",
-    "engines": {
-        "vscode": "^1.89.0"
-    },
-    "publisher": "revrenlove2",
-    "categories": [
-        "Other"
+  "name": "c-sharp-utilities2",
+  "displayName": "C# Utilities",
+  "description": "",
+  "version": "3.0.10",
+  "engines": {
+    "vscode": "^1.89.0"
+  },
+  "publisher": "revrenlove2",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "c-sharp-utilities2.helloWorld",
+        "title": "Hello, world."
+      },
+      {
+        "command": "c-sharp-utilities2.addClass",
+        "title": "Add Class"
+      },
+      {
+        "command": "c-sharp-utilities2.addEnum",
+        "title": "Add Enum"
+      },
+      {
+        "command": "c-sharp-utilities2.addStruct",
+        "title": "Add Struct"
+      },
+      {
+        "command": "c-sharp-utilities2.addRecord",
+        "title": "Add Record"
+      },
+      {
+        "command": "c-sharp-utilities2.addInterface",
+        "title": "Add Interface"
+      },
+      {
+        "command": "c-sharp-utilities2.manageProjectReferences",
+        "title": "Manage Project References...",
+        "icon": "$(edit)"
+      }
     ],
-    "activationEvents": [
-        "onStartupFinished"
-    ],
-    "main": "./out/extension.js",
-    "contributes": {
-        "commands": [
-            {
-                "command": "c-sharp-utilities2.helloWorld",
-                "title": "Hello, world."
-            },
-            {
-                "command": "c-sharp-utilities2.addClass",
-                "title": "Add Class"
-            },
-            {
-                "command": "c-sharp-utilities2.addEnum",
-                "title": "Add Enum"
-            },
-            {
-                "command": "c-sharp-utilities2.addStruct",
-                "title": "Add Struct"
-            },
-            {
-                "command": "c-sharp-utilities2.addRecord",
-                "title": "Add Record"
-            },
-            {
-                "command": "c-sharp-utilities2.addInterface",
-                "title": "Add Interface"
-            },
-            {
-                "command": "c-sharp-utilities2.manageProjectReferences",
-                "title": "Manage Project References...",
-                "icon": "$(edit)"
-            }
-        ],
-        "menus": {
-            "commandPalette": [
-                {
-                    "command": "c-sharp-utilities2.addClass",
-                    "when": "false"
-                },
-                {
-                    "command": "c-sharp-utilities2.addInterface",
-                    "when": "false"
-                },
-                {
-                    "command": "c-sharp-utilities2.addRecord",
-                    "when": "false"
-                },
-                {
-                    "command": "c-sharp-utilities2.addEnum",
-                    "when": "false"
-                },
-                {
-                    "command": "c-sharp-utilities2.addStruct",
-                    "when": "false"
-                }
-            ],
-            "c-sharp-utilities2.addItem": [
-                {
-                    "command": "c-sharp-utilities2.addClass"
-                },
-                {
-                    "command": "c-sharp-utilities2.addInterface"
-                },
-                {
-                    "command": "c-sharp-utilities2.addRecord"
-                },
-                {
-                    "command": "c-sharp-utilities2.addEnum"
-                },
-                {
-                    "command": "c-sharp-utilities2.addStruct"
-                }
-            ],
-            "explorer/context": [
-                {
-                    "submenu": "c-sharp-utilities2.addItem",
-                    "when": "resourceExtname == .csproj || resourceExtname == .cs || explorerResourceIsFolder"
-                },
-                {
-                    "command": "c-sharp-utilities2.manageProjectReferences",
-                    "when": "resourceExtname == .csproj"
-                }
-            ]
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "c-sharp-utilities2.addClass",
+          "when": "false"
         },
-        "submenus": [
-            {
-                "id": "c-sharp-utilities2.addItem",
-                "label": "Add C# Item..."
-            }
-        ],
-        "configuration": {
-            "title": "C# Utilities",
-            "properties": {
-                "c-sharp-utilities2.newItemTemplate.fileScopedNamespace": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Use File Scoped Namespaces for new C# items.",
-                    "order": 0
-                },
-                "c-sharp-utilities2.newItemTemplate.includeUsingStatements": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Include specified using statements for new C# items.",
-                    "order": 1
-                },
-                "c-sharp-utilities2.newItemTemplate.namespacesToInclude": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "default": [
-                        "System",
-                        "System.Collections.Generic",
-                        "System.Text"
-                    ],
-                    "description": "Namespaces to include in a new C# item - this will only be used if the \"Include Using Statements\" setting is checked.",
-                    "order": 2
-                }
-            }
+        {
+          "command": "c-sharp-utilities2.addInterface",
+          "when": "false"
+        },
+        {
+          "command": "c-sharp-utilities2.addRecord",
+          "when": "false"
+        },
+        {
+          "command": "c-sharp-utilities2.addEnum",
+          "when": "false"
+        },
+        {
+          "command": "c-sharp-utilities2.addStruct",
+          "when": "false"
         }
+      ],
+      "c-sharp-utilities2.addItem": [
+        {
+          "command": "c-sharp-utilities2.addClass"
+        },
+        {
+          "command": "c-sharp-utilities2.addInterface"
+        },
+        {
+          "command": "c-sharp-utilities2.addRecord"
+        },
+        {
+          "command": "c-sharp-utilities2.addEnum"
+        },
+        {
+          "command": "c-sharp-utilities2.addStruct"
+        }
+      ],
+      "explorer/context": [
+        {
+          "submenu": "c-sharp-utilities2.addItem",
+          "when": "resourceExtname == .csproj || resourceExtname == .cs || explorerResourceIsFolder"
+        },
+        {
+          "command": "c-sharp-utilities2.manageProjectReferences",
+          "when": "resourceExtname == .csproj"
+        }
+      ]
     },
-    "scripts": {
-        "vscode:prepublish": "rm -rf out && esbuild ./src/extension.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node --minify && npm run copy-static",
-        "esbuild-base": "esbuild ./src/extension.ts ./src/test/**/*.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node",
-        "esbuild": "npm run esbuild-base -- --sourcemap && npm run copy-static",
-        "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch && npm run copy-static",
-        "copy-test-assets": "copyfiles -u 3 ./src/test/assets/* ./out/test/assets",
-        "copy-static": "copyfiles -u 1 ./**/*.tmpl ./out",
-        "deploy": "vsce publish",
-        "package": "vsce package",
-        "pretest": "npm run clean && npm run copy-test-assets",
-        "test": "vscode-test",
-        "clean": "npm run clean-node-modules && npm run clean-out",
-        "clean-node-modules": "rm -rf node_modules && npm i",
-        "clean-out": "rm -rf out && npm run esbuild",
-        "lint": "eslint ."
-    },
-    "devDependencies": {
-        "@eslint/js": "^9.7.0",
-        "@stylistic/eslint-plugin": "^2.3.0",
-        "@ts-type/package-dts": "^2.0.8",
-        "@types/eslint__js": "^8.42.3",
-        "@types/mocha": "^10.0.6",
-        "@types/node": "^18.19.33",
-        "@types/vscode": "^1.89.0",
-        "@types/xml2js": "^0.4.14",
-        "@vscode/test-cli": "^0.0.8",
-        "@vscode/test-electron": "^2.3.9",
-        "@vscode/vsce": "^2.26.1",
-        "copyfiles": "^2.4.1",
-        "esbuild": "^0.20.2",
-        "eslint": "^8.57.0",
-        "typescript": "^5.5.3",
-        "typescript-eslint": "^7.16.1"
-    },
-    "dependencies": {
-        "@revrenlove/easy-vscode-commands": "^1.0.3",
-        "xml2js": "^0.6.2"
+    "submenus": [
+      {
+        "id": "c-sharp-utilities2.addItem",
+        "label": "Add C# Item..."
+      }
+    ],
+    "configuration": {
+      "title": "C# Utilities",
+      "properties": {
+        "c-sharp-utilities2.newItemTemplate.fileScopedNamespace": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use File Scoped Namespaces for new C# items.",
+          "order": 0
+        },
+        "c-sharp-utilities2.newItemTemplate.includeUsingStatements": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include specified using statements for new C# items.",
+          "order": 1
+        },
+        "c-sharp-utilities2.newItemTemplate.namespacesToInclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "System",
+            "System.Collections.Generic",
+            "System.Text"
+          ],
+          "description": "Namespaces to include in a new C# item - this will only be used if the \"Include Using Statements\" setting is checked.",
+          "order": 2
+        }
+      }
     }
+  },
+  "scripts": {
+    "vscode:prepublish": "rm -rf out && esbuild ./src/extension.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node --minify && npm run copy-static",
+    "esbuild-base": "esbuild ./src/extension.ts ./src/test/**/*.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap && npm run copy-static",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch && npm run copy-static",
+    "copy-test-assets": "copyfiles -u 3 ./src/test/assets/* ./out/test/assets",
+    "copy-static": "copyfiles -u 1 ./**/*.tmpl ./out",
+    "deploy": "vsce publish",
+    "package": "vsce package",
+    "pretest": "npm run clean && npm run copy-test-assets",
+    "test": "vscode-test",
+    "clean": "npm run clean-node-modules && npm run clean-out",
+    "clean-node-modules": "rm -rf node_modules && npm i",
+    "clean-out": "rm -rf out && npm run esbuild",
+    "lint": "eslint .",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.7.0",
+    "@stylistic/eslint-plugin": "^2.3.0",
+    "@ts-type/package-dts": "^2.0.8",
+    "@types/eslint__js": "^8.42.3",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^18.19.33",
+    "@types/vscode": "^1.89.0",
+    "@types/xml2js": "^0.4.14",
+    "@vscode/test-cli": "^0.0.8",
+    "@vscode/test-electron": "^2.3.9",
+    "@vscode/vsce": "^2.26.1",
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.20.2",
+    "eslint": "^8.57.0",
+    "husky": "^9.1.3",
+    "lint-staged": "^15.2.7",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.16.1"
+  },
+  "dependencies": {
+    "@revrenlove/easy-vscode-commands": "^1.0.3",
+    "xml2js": "^0.6.2"
+  }
 }
