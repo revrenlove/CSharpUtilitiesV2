@@ -24,9 +24,9 @@ jobs:
       - run: npm ci
       - run: npm run lint -- --fix
 
-      # - name: Create PR For Linting Fixes
-      #   id: create-pr
-      #   uses: peter-evans/create-pull-request@v6
+      - name: Create PR For Linting Fixes
+        id: create-pr
+        uses: peter-evans/create-pull-request@v6
 
       # - name: Merge Linting Fix PR
       #   uses: juliangruber/merge-pull-request-action@v1.3.1
