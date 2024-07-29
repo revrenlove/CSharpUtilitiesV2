@@ -25,6 +25,8 @@ jobs:
       - run: npm ci
       - run: npm run lint -- --fix
 
+      - run: git status
+
       - name: Create PR For Linting Fixes
         id: create-pr
         uses: peter-evans/create-pull-request@v6
