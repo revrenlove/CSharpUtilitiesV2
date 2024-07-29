@@ -24,13 +24,13 @@ jobs:
       - run: npm ci
       - run: npm run lint -- --fix
 
-      - name: Create PR For Linting Fixes
-        id: create-pr
-        uses: peter-evans/create-pull-request@v6
+      # - name: Create PR For Linting Fixes
+      #   id: create-pr
+      #   uses: peter-evans/create-pull-request@v6
 
-      - name: Merge Linting Fix PR
-        uses: juliangruber/merge-pull-request-action@v1.3.1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ steps.create-pr.outputs.pull-request-number }}
-          method: squash
+      # - name: Merge Linting Fix PR
+      #   uses: juliangruber/merge-pull-request-action@v1.3.1
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     number: ${{ steps.create-pr.outputs.pull-request-number }}
+      #     method: squash
