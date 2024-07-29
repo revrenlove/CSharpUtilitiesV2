@@ -13,8 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # TODO: #33 - JE - We need to change this ref thing...
-          ref: ${{ github.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v4
@@ -25,11 +25,13 @@ jobs:
       - run: npm ci
       - run: npm run lint -- --fix
 
-      - run: git status
+      - uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
 
-      - name: Create PR For Linting Fixes
-        id: create-pr
-        uses: peter-evans/create-pull-request@v6
+      # - name: Create PR For Linting Fixes
+      #   id: create-pr
+      #   uses: peter-evans/create-pull-request@v6
 
       # - name: Merge Linting Fix PR
       #   uses: juliangruber/merge-pull-request-action@v1.3.1
