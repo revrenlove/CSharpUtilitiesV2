@@ -2,9 +2,9 @@ name: Lint
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
 
 jobs:
   lint:
@@ -13,6 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # TODO: #33 - JE - We need to change this ref thing...
           ref: ${{ github.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
