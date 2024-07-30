@@ -2,9 +2,6 @@ name: Lint
 
 on:
   pull_request:
-  # push:
-  #   branches:
-  #     - main
 
 jobs:
   lint:
@@ -25,8 +22,15 @@ jobs:
       - run: npm ci
       - run: npm run lint -- --fix
 
+      - name: Import GPG key
+        run: echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+
+      - name: Configure git to use GPG
+        run: |
+          git config --global user.signingkey 2757FBB7C900FB37AA6D69BD6064375E00334807
+          git config --global gpg.program gpg
+
       - uses: EndBug/add-and-commit@v9
         with:
           default_author: github_actions
-          commit: -S
-          # Simple commit
+          commit: -S ${{ secrets.GPG_PRIVATE_KEY }}
