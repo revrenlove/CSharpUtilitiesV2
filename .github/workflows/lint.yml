@@ -23,7 +23,8 @@ jobs:
       - run: npm run lint -- --fix
 
       - name: Import GPG key
-        run: echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
 
       - name: Configure git to use GPG
         run: |
