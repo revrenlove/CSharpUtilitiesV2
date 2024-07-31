@@ -33,10 +33,10 @@ jobs:
           echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
           echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
       # End Block To Delete
-      
+
       - name: Configure git to use GPG
         run: |
-          git config --global user.signingkey 2757FBB7C900FB37AA6D69BD6064375E00334807
+          git config --global user.signingkey ${{ env.GPG_KEY_ID }}
           git config --global gpg.program gpg
 
       - uses: EndBug/add-and-commit@v9
