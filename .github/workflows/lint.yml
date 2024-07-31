@@ -36,7 +36,7 @@ jobs:
 
       - name: Configure git to use GPG
         run: |
-          git config --global user.signingkey ${{ env.GPG_KEY_ID }}
+          git config --global user.signingkey 7CB1706DEBF1FE289970B6EEA72D5F5DA4860726
           git config --global gpg.program gpg
 
       - uses: EndBug/add-and-commit@v9
