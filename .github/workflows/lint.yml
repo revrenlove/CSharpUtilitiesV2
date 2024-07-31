@@ -26,18 +26,11 @@ jobs:
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
 
-      # This may need to be deleted when we try the one without a passphrase
-      # - name: Configure GPG Environment
-      #   run: |
-      #     echo "use-agent" >> ~/.gnupg/gpg.conf
-      #     echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-      #     echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-      # End Block To Delete
-
       - name: Configure git to use GPG
         run: |
           git config --global user.signingkey 7CB1706DEBF1FE289970B6EEA72D5F5DA4860726
           git config --global gpg.program gpg
+          git config --global commit.gpgSign true
 
       - uses: EndBug/add-and-commit@v9
         with:
