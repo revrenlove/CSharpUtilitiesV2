@@ -41,3 +41,4 @@ jobs:
           git config --global user.name "GH Actions"
           git add -A
           git commit -S -m "Linting"
+          git push
