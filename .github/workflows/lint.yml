@@ -32,7 +32,10 @@ jobs:
           git config --global gpg.program gpg
           git config --global commit.gpgSign true
 
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        with: 
-          commit_options: '-S'
-          
+      # - uses: stefanzweifel/git-auto-commit-action@v5
+      #   with: 
+      #     commit_options: '-S'
+      - name: Git Commands
+        run: |
+          git add -A
+          git commit -S -m "Linting"
