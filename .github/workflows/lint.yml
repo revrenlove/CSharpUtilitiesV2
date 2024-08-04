@@ -37,5 +37,7 @@ jobs:
       #     commit_options: '-S'
       - name: Git Commands
         run: |
+          git config --global user.email "bot@revrenlove.com"
+          git config --global user.name "GH Actions"
           git add -A
           git commit -S -m "Linting"
