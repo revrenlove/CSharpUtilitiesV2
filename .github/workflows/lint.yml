@@ -22,19 +22,28 @@ jobs:
       - run: npm ci
       - run: npm run lint -- --fix
 
-      - name: Import GPG key
-        run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+      # - name: Import GPG key
+      #   run: |
+      #     echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
 
-      - name: Configure git to use GPG
-        run: |
-          git config --global user.signingkey 7CB1706DEBF1FE289970B6EEA72D5F5DA4860726
-          git config --global gpg.program gpg
-          git config --global commit.gpgSign true
+      # - name: Configure git to use GPG
+      #   run: |
+      #     git config --global user.signingkey 7CB1706DEBF1FE289970B6EEA72D5F5DA4860726
+      #     git config --global gpg.program gpg
+      #     git config --global commit.gpgSign true
 
       # - uses: stefanzweifel/git-auto-commit-action@v5
       #   with: 
       #     commit_options: '-S'
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v2
+        with:
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
       - name: Git Commands
         run: |
           git config --global user.email "bot@revrenlove.com"
