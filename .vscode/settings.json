@@ -1,9 +1,13 @@
 {    
     // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
     "typescript.tsc.autoDetect": "off",
-    // "editor.codeActionsOnSave": {
-    //     "source.fixAll": "explicit"
-    // },
+
+    // If this is disabled, the pre-commit hook will still lint things :)
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit"
+    },
+    
+    // https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker
     "cSpell.words": [
         "Affordance",
         "copyfiles",
