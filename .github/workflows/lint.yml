@@ -29,7 +29,7 @@ jobs:
         run: |
           git fetch
           if git diff --quiet; then
-            HAS_FILE_CHANGES="true"
+            echo "HAS_FILE_CHANGES=true" >> $GITHUB_ENV
           fi
             
       - name: Exit if no changes
