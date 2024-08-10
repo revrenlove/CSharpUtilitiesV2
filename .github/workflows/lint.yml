@@ -29,13 +29,13 @@ jobs:
           passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSKEY }}
 
       - name: Git Commands
-        env:
-          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        # env:
+        #   GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GH Actions"
           git config --global commit.gpgSign true
-          git config --global user.signingkey $GPG_KEY_ID
+          git config --global user.signingkey 7013A13FEB1CD390
           git add -A
           git commit --no-verify -S -m "Linting"
           git push
