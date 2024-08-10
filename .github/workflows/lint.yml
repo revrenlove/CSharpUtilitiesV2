@@ -4,7 +4,7 @@ on:
   pull_request:
 
 env:
-  HAS_FILE_CHANGES: false
+  HAS_FILE_CHANGES: 'false'
 
 jobs:
   lint:
@@ -29,11 +29,11 @@ jobs:
         run: |
           git fetch
           if git diff --quiet; then
-            echo "HAS_FILE_CHANGES=true" >> $GITHUB_ENV
+            echo "HAS_FILE_CHANGES='true'" >> $GITHUB_ENV
           fi
             
       - name: Exit if no changes
-        if: env.HAS_FILE_CHANGES == false
+        if: env.HAS_FILE_CHANGES == 'false'
         run: |
           echo "No changes to process. Exiting."
           exit 0
