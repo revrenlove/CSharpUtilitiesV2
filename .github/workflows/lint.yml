@@ -33,7 +33,7 @@ jobs:
           fi
             
       - name: Exit if no changes
-        if: env.HAS_FILE_CHANGES == true
+        if: env.HAS_FILE_CHANGES == false
         run: |
           echo "No changes to process. Exiting."
           exit 0
