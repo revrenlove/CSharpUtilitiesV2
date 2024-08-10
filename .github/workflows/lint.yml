@@ -30,7 +30,7 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
-      - name: Git Commands
+      - name: Add/Commit/Push
         run: |
           git add -A
           git commit --no-verify -S -m "Linting"
