@@ -33,7 +33,8 @@ jobs:
           fi
             
       - name: Exit if no changes
-        if: ${{ env.HAS_FILE_CHANGES == true}}
+        # TODO: JE - the `if` does not work
+        if: ${{ true}}
         run: |
           echo "No changes to process. Exiting."
           exit 0
