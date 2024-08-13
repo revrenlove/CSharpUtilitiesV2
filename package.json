@@ -148,7 +148,8 @@
         "clean": "npm run clean-node-modules && npm run clean-out",
         "clean-node-modules": "rm -rf node_modules && npm i",
         "clean-out": "rm -rf out && npm run esbuild",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "prepare": "husky"
     },
     "devDependencies": {
         "@eslint/js": "^9.7.0",
@@ -165,6 +166,8 @@
         "copyfiles": "^2.4.1",
         "esbuild": "^0.20.2",
         "eslint": "^8.57.0",
+        "husky": "^9.1.4",
+        "lint-staged": "^15.2.9",
         "typescript": "^5.5.3",
         "typescript-eslint": "^7.16.1"
     },
