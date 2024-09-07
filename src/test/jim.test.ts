@@ -11,5 +11,8 @@ suite("Jim Test Suite", () => {
 
         // const y = vscode.window.activeColorTheme;
         void vscode.window.showInformationMessage("SS");
+
+        // Intentionally breaking test...
+        throw new Error("KILL IT WITH FIRE!");
     });
 });
