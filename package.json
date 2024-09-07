@@ -142,7 +142,7 @@
         "copy-static": "copyfiles -u 1 ./**/*.tmpl ./out",
         "deploy": "vsce publish",
         "package": "vsce package",
-        "pretest": "npm run clean && npm run copy-test-assets",
+        "pretest": "npm run clean && npm run copy-test-assets && node ./scripts/initializeTests.mjs",
         "test": "vscode-test",
         "clean": "npm run clean:packages && npm run clean:out",
         "clean:packages": "npm run delete:packages && npm i",

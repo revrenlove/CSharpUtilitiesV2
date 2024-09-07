@@ -23,7 +23,7 @@ async function cSharpProjectFactory(csprojUri: vscode.Uri): Promise<CSharpProjec
     return cSharpProject;
 }
 
-// TODO: JE - This needs tests...
+// TODO: JE - This might need to move...
 async function getRootNamespace(csprojUri: vscode.Uri): Promise<string | undefined> {
 
     const xml = await util.readFile(csprojUri);
@@ -53,9 +53,4 @@ async function getRootNamespace(csprojUri: vscode.Uri): Promise<string | undefin
     return rootNamespace;
 }
 
-// TODO: JE - Figure out how we want to export methods for testing...
-export { cSharpProjectFactory };
-
-// export default cSharpProjectFactory;
-// const testableFunctions = { getProjectReferenceUris, relativePathToAbsolutePath };
-// export { testableFunctions as cSharpProjectFactoryInternalFunctions };
+export { cSharpProjectFactory, getRootNamespace };
