@@ -9,8 +9,8 @@ import { listProjectReferences } from "../utilities/dotnetShellOperations";
 
 async function cSharpProjectFactory(csprojUri: vscode.Uri): Promise<CSharpProject> {
 
-    const projectName = path.parse(csprojUri.fsPath).name;
-    const rootNamespace = await getRootNamespace(csprojUri) ?? projectName;
+    const projectName = getProjectName(csprojUri);
+    const rootNamespace = await getRootNamespace(csprojUri);
     const projectReferenceUris = await listProjectReferences(csprojUri);
 
     const cSharpProject: CSharpProject = {
@@ -23,8 +23,17 @@ async function cSharpProjectFactory(csprojUri: vscode.Uri): Promise<CSharpProjec
     return cSharpProject;
 }
 
+function getProjectName(csprojUri: vscode.Uri): string {
+
+    const projectName = path.parse(csprojUri.fsPath).name;
+
+    return projectName;
+}
+
 // TODO: JE - This might need to move...
-async function getRootNamespace(csprojUri: vscode.Uri): Promise<string | undefined> {
+async function getRootNamespace(csprojUri: vscode.Uri): Promise<string> {
+
+    const projectName = getProjectName(csprojUri);
 
     const xml = await util.readFile(csprojUri);
 
@@ -33,24 +42,24 @@ async function getRootNamespace(csprojUri: vscode.Uri): Promise<string | undefin
     const propertyGroups = csprojDocument.Project.PropertyGroup;
 
     if (!propertyGroups) {
-        return;
+        return projectName;
     }
 
     const propertyGroup = propertyGroups.find(p => p.Property?.some(property => property.RootNamespace));
 
     if (!propertyGroup) {
-        return;
+        return projectName;
     }
 
     const propertyProxy = propertyGroup.Property?.find(p => p.RootNamespace);
 
-    if (!propertyProxy) {
-        return;
+    if (!propertyProxy?.RootNamespace) {
+        return projectName;
     }
 
-    const rootNamespace = propertyProxy.RootNamespace?.content;
+    const rootNamespace = propertyProxy.RootNamespace.content;
 
     return rootNamespace;
 }
 
-export { cSharpProjectFactory, getRootNamespace };
+export { cSharpProjectFactory, getRootNamespace, getProjectName };

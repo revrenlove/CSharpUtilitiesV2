@@ -137,7 +137,7 @@
     "scripts": {
         "vscode:prepublish": "npm run delete:out && esbuild ./src/extension.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node --minify && npm run copy-static",
         "build:base": "esbuild ./src/extension.ts ./src/test/**/*.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node",
-        "build": "npm run build:base -- --sourcemap && npm run copy-static",
+        "build": "npm run build:base -- --sourcemap && npm run copy-static && npm run copy-test-assets",
         "copy-test-assets": "copyfiles -u 3 ./src/test/assets/* ./out/test/assets",
         "copy-static": "copyfiles -u 1 ./**/*.tmpl ./out",
         "deploy": "vsce publish",
