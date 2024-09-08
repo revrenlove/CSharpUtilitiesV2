@@ -14,4 +14,14 @@ const remove = item => {
     console.info(`\`${item}\` has been deleted`);
 };
 
-itemsToDelete.forEach(remove);
+/**
+ *
+ * @param  {...string} itemsToDelete
+ */
+function rmRf(...itemsToDelete) {
+    itemsToDelete.forEach(remove);
+}
+
+rmRf(...itemsToDelete);
+
+export default rmRf;
