@@ -15,7 +15,7 @@ suite("`getRootNamespace` Suite", () => {
 
         const rootNamespace = await getRootNamespace(csprojUri);
 
-        assert.strictEqual(rootNamespace, "NoExplicitNamespace");
+        assert.strictEqual(rootNamespace, "NoExplicitNamespaceX");
     });
 
     // Case for No root namespace (use project file name)
