@@ -1,9 +1,11 @@
-import { capitalizeFirstLetter } from "./stringOperations";
-import { getParentDirectoryPath, readFile, writeFile } from "./fileOperations";
+import * as stringOperations from "./stringOperations";
+import * as fileOperations from "./fileOperations";
+import * as dotnetShellOperations from "./dotnetShellOperations";
+import * as extensionOperations from "./extensionOperations";
 
 export {
-    capitalizeFirstLetter,
-    readFile,
-    writeFile,
-    getParentDirectoryPath,
+    stringOperations,
+    fileOperations,
+    dotnetShellOperations,
+    extensionOperations,
 };

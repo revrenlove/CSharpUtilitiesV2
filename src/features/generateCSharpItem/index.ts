@@ -3,11 +3,11 @@ import * as path from "path";
 import * as vscode from "vscode";
 import { ItemFileTemplate } from "./itemFileTemplate";
 import { TemplateType } from "./templateType";
-import { cSharpProjectFactory } from "../../factories/cSharpProjectFactory";
-import * as util from "../../utilities";
+import * as utilities from "../../utilities";
 import { TemplatePaths } from "../../constants";
 import { ReadDirectoryResult } from "../../models/readDirectoryResult";
 import ConfigurationManager from "../../configurationManager";
+import cSharpProjectFactory from "../../factories/cSharpProjectFactory";
 
 const configurationManager = ConfigurationManager.getInstance();
 
@@ -24,7 +24,7 @@ async function generateCSharpItem(templateType: TemplateType, contextualUri: vsc
 
     const newFileUri = await getNewFileUri(filename, contextualUri);
 
-    if (await fileExists(newFileUri)) {
+    if (await utilities.fileOperations.fileExists(newFileUri)) {
         throw new Error(`File already exists: ${newFileUri.fsPath}`);
     }
 
@@ -39,13 +39,13 @@ async function generateCSharpItem(templateType: TemplateType, contextualUri: vsc
 
     const fileContentsString = await populateTemplate(template);
 
-    await util.writeFile(newFileUri, fileContentsString);
+    await utilities.fileOperations.writeFile(newFileUri, fileContentsString);
     await openEditor(newFileUri);
 }
 
 async function promptForFilename(templateType: TemplateType): Promise<string | undefined> {
 
-    const templateTypeName = util.capitalizeFirstLetter(TemplateType[templateType]);
+    const templateTypeName = utilities.stringOperations.capitalizeFirstLetter(TemplateType[templateType]);
 
     let placeHolder = `MyAwesome${templateTypeName}`;
 
@@ -87,23 +87,6 @@ async function getNewFileUri(filename: string, contextualUri: vscode.Uri): Promi
     const newFileUri = vscode.Uri.file(newFilePath);
 
     return newFileUri;
-}
-
-// I know it's bad form to use try/catch for flow control...
-//   but this is literally the only way to do this. :(
-async function fileExists(uri: vscode.Uri): Promise<boolean> {
-
-    try {
-        await vscode.workspace.fs.stat(uri);
-        return true;
-    }
-    catch (error) {
-        if (error instanceof Error && error.message.includes("ENOENT")) {
-            return false;
-        }
-
-        throw error;
-    }
 }
 
 async function getFullNamespace(newFileUri: vscode.Uri): Promise<string> {
@@ -190,7 +173,7 @@ async function populateTemplate(templateValues: ItemFileTemplate): Promise<strin
 
     const templateUri = vscode.Uri.file(getTemplatePath());
 
-    let template = await util.readFile(templateUri);
+    let template = await utilities.fileOperations.readFile(templateUri);
 
     for (const [placeholder, value] of Object.entries(templateValues)) {
 

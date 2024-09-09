@@ -1,12 +1,12 @@
 import * as assert from "assert";
-import { capitalizeFirstLetter } from "../utilities";
+import * as utilities from "../utilities";
 import * as vscode from "vscode";
 
 suite("Jim Test Suite", () => {
     test("Jim test", () => {
         // TODO: JE - Delete this file
 
-        const x = capitalizeFirstLetter("hi");
+        const x = utilities.stringOperations.capitalizeFirstLetter("hi");
         assert.strictEqual(x, "Hi");
 
         // const y = vscode.window.activeColorTheme;
