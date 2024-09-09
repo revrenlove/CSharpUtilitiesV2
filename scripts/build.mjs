@@ -1,16 +1,18 @@
+import * as fs from "fs";
 import * as esbuild from "esbuild";
 import rmRf from "./rmRf.mjs";
-import copyfilesHelper from "./copyfilesHelper.mjs";
+import copyfilesAsync from "./copyfilesAsync.mjs";
 
 console.info("Build has started.");
 
-// TODO: If "out" directory exists, back it up.
+if (fs.existsSync("./out")) {
 
-// else, don't remove "out" (it isn't there anyway)
+    await copyfilesAsync(["./out/**/*"], "./out.backup", 1);
 
-rmRf("./out");
+    rmRf("./out");
+}
 
-// TODO: JE - Fix the "usage" - like, give the user some guidance if they pass the wrong parameter or something...
+// TODO: JE - Document this...
 let isProd = false;
 
 if (process.argv.length === 3 && process.argv[2] === "--prod") {
@@ -31,7 +33,7 @@ const sourcemap = !isProd;
 
 // TODO: JE - Check for errors, if there are, revert to backup out. skip the copyfiles calls
 
-await esbuild.build({
+const buildResult = await esbuild.build({
     bundle: true,
     outdir: "./out",
     format: "cjs",
@@ -42,10 +44,16 @@ await esbuild.build({
     entryPoints: entryPoints,
 });
 
-copyfilesHelper(["./**/*.tmpl"], "./out", 1);
+console.log(buildResult);
+
+if (buildResult.errors.length > 0 || buildResult.warnings.length > 0) {
+    throw new Error("Something fucked up.");
+}
+
+await copyfilesAsync(["./**/*.tmpl"], "./out", 1);
 
 if (!isProd) {
-    copyfilesHelper(["./src/test/assets/*"], "./out/test/assets", 3);
+    await copyfilesAsync(["./src/test/assets/*"], "./out/test/assets", 3);
 }
 
 // TODO: remove backup "out"
