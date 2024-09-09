@@ -2,8 +2,8 @@ import * as os from "node:os";
 import * as vscode from "vscode";
 import { CrashReportModalMessageItem } from "./crashReportModalMessageItem";
 import { GithubIssuePayload } from "./githubIssuePayload";
-import { getExtensionVersion } from "../utilities/extensionOperations";
 import { NewGithubIssueUrl } from "../constants";
+import * as utilities from "../utilities";
 
 async function errorCallback(e: Error): Promise<void> {
 
@@ -57,7 +57,7 @@ function formatIssueBody(e: Error): string {
 
     body += "=================================\n\n";
 
-    body += `Extension Version: ${getExtensionVersion() ?? "Not available"}\n`;
+    body += `Extension Version: ${utilities.extensionOperations.getExtensionVersion() ?? "Not available"}\n`;
     body += `Platform: ${os.platform()}\n`;
     body += `Release: ${os.release()}\n`;
     body += `Version: ${os.version() ? os.version() : "Not available"}\n\n`;

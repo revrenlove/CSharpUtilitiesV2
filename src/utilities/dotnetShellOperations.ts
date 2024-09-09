@@ -4,7 +4,7 @@ import { exec } from "child_process";
 import { promisify } from "util";
 import { DotnetCommand } from "../models/dotnetCommand";
 import { CSharpUtilitiesExtensionError } from "../error/cSharpUtilitiesExtensionError";
-import { getParentDirectoryPath } from ".";
+import * as utilities from "./";
 
 const execAsync = promisify(exec);
 
@@ -13,7 +13,7 @@ async function addProjectReferences(
     addedProjectUris: vscode.Uri[],
 ): Promise<string> {
 
-    const directoryPath = getParentDirectoryPath(targetProjectUri);
+    const directoryPath = utilities.fileOperations.getParentDirectoryPath(targetProjectUri);
     const command = DotnetCommand.AddProjectReference;
     const projectPaths = addedProjectUris.map(u => u.fsPath);
 
@@ -27,7 +27,7 @@ async function removeProjectReferences(
     removedProjectUris: vscode.Uri[],
 ): Promise<string> {
 
-    const directoryPath = getParentDirectoryPath(targetProjectUri);
+    const directoryPath = utilities.fileOperations.getParentDirectoryPath(targetProjectUri);
     const command = DotnetCommand.RemoveProjectReference;
     const projectPaths = removedProjectUris.map(u => u.fsPath);
 
@@ -38,7 +38,7 @@ async function removeProjectReferences(
 
 async function listProjectReferences(targetProjectUri: vscode.Uri): Promise<vscode.Uri[]> {
 
-    const directoryPath = getParentDirectoryPath(targetProjectUri);
+    const directoryPath = utilities.fileOperations.getParentDirectoryPath(targetProjectUri);
     const command = DotnetCommand.ListProjectReferences;
 
     // BUG: JE - I think it's breaking on this because `dotnet` isn't installed maybe?

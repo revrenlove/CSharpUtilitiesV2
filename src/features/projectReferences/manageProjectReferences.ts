@@ -5,9 +5,9 @@ import { CSharpProject } from "../../models/cSharpProject";
 import { ReferenceChangeResult } from "../../models/referenceChangeResult";
 import { TreeNode } from "../../models/treeNode";
 import { CircularReferenceError } from "../../error/circularReferenceError";
-import { cSharpProjectFactory } from "../../factories/cSharpProjectFactory";
 import { buildProjectReferenceTree } from ".";
-import * as dotnetShellOperations from "../../utilities/dotnetShellOperations";
+import cSharpProjectFactory from "../../factories/cSharpProjectFactory";
+import * as utilities from "../../utilities";
 
 async function manageProjectReferences(contextualProjectUri: vscode.Uri): Promise<void> {
 
@@ -173,7 +173,7 @@ async function removeProjectReferences(rootProjectUri: vscode.Uri, removedProjec
     };
 
     const removeProjectReferencesCallback = async (): Promise<string> => {
-        return await dotnetShellOperations.removeProjectReferences(rootProjectUri, removedProjectUris);
+        return await utilities.dotnetShellOperations.removeProjectReferences(rootProjectUri, removedProjectUris);
     };
 
     const result = await vscode.window.withProgress(progressOptions, removeProjectReferencesCallback);
@@ -189,7 +189,7 @@ async function addProjectReferences(rootProjectUri: vscode.Uri, addedProjectUris
     };
 
     const addProjectReferencesCallback = async (): Promise<string> => {
-        return await dotnetShellOperations.addProjectReferences(rootProjectUri, addedProjectUris);
+        return await utilities.dotnetShellOperations.addProjectReferences(rootProjectUri, addedProjectUris);
     };
 
     const result = await vscode.window.withProgress(progressOptions, addProjectReferencesCallback);

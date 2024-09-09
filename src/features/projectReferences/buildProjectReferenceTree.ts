@@ -1,7 +1,7 @@
 import { TreeNode } from "../../models/treeNode";
 import { CSharpProject } from "../../models/cSharpProject";
-import { cSharpProjectFactory } from "../../factories/cSharpProjectFactory";
 import { CircularReferenceError } from "../../error/circularReferenceError";
+import cSharpProjectFactory from "../../factories/cSharpProjectFactory";
 
 async function buildProjectReferenceTree(node: TreeNode<CSharpProject>): Promise<TreeNode<CSharpProject>> {
 

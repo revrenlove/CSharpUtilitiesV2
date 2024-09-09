@@ -1,3 +1,4 @@
+// TODO: JE - Why are we even using this???
 function capitalizeFirstLetter(s: string): string {
 
     switch (s.length) {
