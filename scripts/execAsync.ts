@@ -1,0 +1,39 @@
+// TODO: JE - Put this shit in its own npm package.
+// We'll do it in typescript with all the fancy pipeline bullshit, maybe...
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execPromisified = promisify(exec);
+
+/**
+ *
+ * @param command - command to execute
+ * @returns standard output
+ * @throws {ExecAsyncError} Throws if there is anything returned in `stderr`
+ */
+async function execAsync(command: string) {
+
+    const { stdout, stderr } = await execPromisified(command);
+
+    if (stderr) {
+        throw new ExecAsyncError(stderr, stdout);
+    }
+
+    return stdout;
+}
+
+class ExecAsyncError extends Error {
+
+    /**
+     * Standard output from `execAsync`
+     */
+    readonly stdout: string;
+
+    constructor(stderr: string, stdout: string) {
+        super(stderr);
+        this.stdout = stdout;
+    }
+}
+
+export default execAsync;
+export { ExecAsyncError };

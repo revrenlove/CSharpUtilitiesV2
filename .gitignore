@@ -6,3 +6,5 @@ node_modules
 *.vsix
 bin
 obj
+# TODO: JE - Remove this...
+scripts.old

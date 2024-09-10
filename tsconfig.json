@@ -12,10 +12,13 @@
         "emitDecoratorMetadata": true,
         "strict": true,
         "noImplicitAny": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "skipLibCheck": true
     },
     "exclude": [
         "node_modules",
-        ".vscode-test"
+        ".vscode-test",
+        "scripts",
+        "scripts.old"
     ]
 }

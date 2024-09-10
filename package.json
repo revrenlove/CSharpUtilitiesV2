@@ -134,16 +134,18 @@
             }
         }
     },
+    "type": "module",
     "scripts": {
         "vscode:prepublish": "npm run build -- --prod",
-        "build": "node ./scripts/build.mjs",
+        "build": "tsc --noEmit && node ./scripts/build.mjs",
         "pretest": "npm run build && node ./scripts/initializeTests.mjs",
         "lint": "eslint .",
         "prepare": "husky",
         "test": "vscode-test",
         "deploy": "vsce publish",
         "package": "vsce package",
-        "checkout": "npm i && npm prune && npm run build && npm test"
+        "checkout": "npm i && npm prune && npm run build && npm test",
+        "jimtest": "ts-node ./scripts/initializeTests"
     },
     "devDependencies": {
         "@eslint/js": "^9.7.0",
@@ -162,6 +164,8 @@
         "eslint": "^8.57.0",
         "husky": "^9.1.4",
         "lint-staged": "^15.2.9",
+        "ts-node": "^10.9.2",
+        "tsx": "^4.19.0",
         "typescript": "^5.5.3",
         "typescript-eslint": "^7.16.1"
     },

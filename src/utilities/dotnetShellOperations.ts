@@ -6,6 +6,7 @@ import { DotnetCommand } from "../models/dotnetCommand";
 import { CSharpUtilitiesExtensionError } from "../error/cSharpUtilitiesExtensionError";
 import * as utilities from "./";
 
+// TODO: JE - This will end up being in a nuget I write
 const execAsync = promisify(exec);
 
 async function addProjectReferences(
