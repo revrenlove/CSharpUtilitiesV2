@@ -142,7 +142,9 @@
         "prepare": "husky",
         "test": "vscode-test",
         "deploy": "vsce publish",
-        "package": "vsce package"
+        "package": "vsce package",
+        "checkout": "npm i && npm prune && npm run build && npm test",
+        "hello-world": ""
     },
     "devDependencies": {
         "@eslint/js": "^9.7.0",
