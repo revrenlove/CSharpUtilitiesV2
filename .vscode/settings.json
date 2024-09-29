@@ -7,8 +7,9 @@
     },
     "cSpell.words": [
         "Affordance",
-        "copyfiles",
+        "esrun",
         "linebreak",
+        // TODO: JE - Remove this if we aren't using the msbuild.d.ts bullshit whatever
         "msbuild",
         "outdir",
         "outfile",

@@ -1,5 +1,5 @@
 out
-dist
+out.backup
 node_modules
 .vscode-test/
 *.vsix
