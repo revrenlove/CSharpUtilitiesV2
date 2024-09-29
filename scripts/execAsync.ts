@@ -1,5 +1,3 @@
-// TODO: JE - Put this shit in its own npm package.
-// We'll do it in typescript with all the fancy pipeline bullshit, maybe...
 import { exec } from "child_process";
 import { promisify } from "util";
 

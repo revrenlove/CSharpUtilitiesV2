@@ -1,7 +1,9 @@
 {
     "compilerOptions": {
-        "module": "esnext",
-        "target": "esnext",
-        "strictNullChecks": true
+        "module": "ESNext",
+        "target": "ESNext",
+        "strictNullChecks": true,
+        "moduleResolution": "Node",
+        "noImplicitAny": true
     }
 }
