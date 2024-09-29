@@ -6,12 +6,12 @@ import { promisify } from "util";
 const execPromisified = promisify(exec);
 
 /**
- *
+ * Asynchronously execute a command
  * @param command - command to execute
- * @returns standard output
+ * @returns {Promise<string>} standard output
  * @throws {ExecAsyncError} Throws if there is anything returned in `stderr`
  */
-async function execAsync(command: string) {
+async function execAsync(command: string): Promise<string> {
 
     const { stdout, stderr } = await execPromisified(command);
 
