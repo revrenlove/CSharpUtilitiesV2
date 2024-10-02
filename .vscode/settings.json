@@ -4,18 +4,5 @@
     "typescript.tsc.autoDetect": "off",
     "editor.codeActionsOnSave": {
         "source.fixAll": "explicit"
-    },
-    "cSpell.words": [
-        "Affordance",
-        "esrun",
-        "linebreak",
-        // TODO: JE - Remove this if we aren't using the msbuild.d.ts bullshit whatever
-        "msbuild",
-        "outdir",
-        "outfile",
-        "revrenlove",
-        "stroustrup",
-        "tmpl",
-        "tseslint"
-    ]
+    }
 }
