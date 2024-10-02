@@ -27,6 +27,8 @@ jobs:
 
       - run: npm ci
 
+      - run: npm run spell-check
+
       - id: run-lint
         run: npm run lint
 

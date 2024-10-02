@@ -53,7 +53,7 @@ async function listProjectReferences(targetProjectUri: vscode.Uri): Promise<vsco
 
     // EXPECTED POTENTIAL OUTPUT FROM RUNNING THE COMMAND:
 
-    // There are no Project to Project references in project C:\Users\elrod\src\RxTracker\RevrenLove.RxTracker.Models\.
+    // There are no Project to Project references in project ..\RxTracker\RevrenLove.RxTracker.Models\.
 
     // Project reference(s)
     // --------------------
